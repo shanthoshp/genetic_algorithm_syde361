@@ -1,22 +1,22 @@
 
 class Population {
   
-  float mutationRate = 0.1;      // Mutation rate
-  int generations = 0;            // Number of Generations Between Updates
+  //float mutationRate = 0.1;      // Mutation rate
+  //int generations = 0;            // Number of Generations Between Updates
   float fitness;
   DNA[] population;             // Array to hold the current population
   ArrayList<DNA> matingPool;    // ArrayList which we will use for our "mating pool"
-  String target;                // Target phrase
+  //String target;                // Target phrase
   String fittest;               // Variable to store the fittest gene
-  String targetMidi1;                // Target phrase
-  String targetMidi2;                // Target phrase
-  String targetMidi3;                // Target phrase
-  PFont f;
+  //String targetMidi1;                // Target phrase
+  //String targetMidi2;                // Target phrase
+  //String targetMidi3;                // Target phrase
+  //PFont f;
   
-  float tempo = 120; // A tempo value in beats per minute
+  //float tempo = 120; // A tempo value in beats per minute
   
-  float startTime = millis(); 
-  int beat = 0; //Index of beat
+  //float startTime = millis(); 
+  //int beat = 0; //Index of beat
   
   Population(String p, float m, int num) {
     target = p;
@@ -27,7 +27,7 @@ class Population {
     }
     
     //for (int i = 0; i < generations; i++){ // set the number of times to update the GA between beats
-          updateGA();
+          updateGA(mutationRate);
         //}
     
     matingPool = new ArrayList<DNA>();
@@ -39,7 +39,7 @@ class Population {
   // Fitness function (returns floating point % of "correct" characters)
   
   
-  void updateGA(){
+  void updateGA(float mutationRate){
     float maxFit = 0;
     for (int i = 0; i < population.length; i++) {
     population[i].calcFitness(target);
@@ -68,6 +68,6 @@ class Population {
     child.mutate(mutationRate);
     population[i] = child;
   }
-    generations++;
+    //generations++;
   }
 }
