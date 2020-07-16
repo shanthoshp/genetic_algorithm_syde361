@@ -24,6 +24,9 @@ float startTime = millis();
 float tempo = 20;
 PFont f;
 
+StringList suggestions = new StringList();
+int currentSuggestion = 0;
+
 ControlP5 cp5;
 ScreenSwitchListener screenListener;
 CallbackListener cb;
@@ -36,7 +39,7 @@ int changeScreen;
 int pauseScreen;
 
 void setup() {
-  size(800, 300);
+  size(1366, 768);
   
   background(c_very_dark);
   targetMidi1 =   "0000000000000000"; // These need to be 16 long to work with the other parts
@@ -193,7 +196,7 @@ void drawScreen(){
     } else {
       fill(209, 210, 211);
     }
-    rect(45+i*32,height/5+5,30,30,5);
+    rect(45+i*32,300/5+5,30,30,5);
     
     if(int(population.fittest.charAt(i+16))==49){
       fill(255,0,0); // fill for wanted beat 
@@ -201,14 +204,38 @@ void drawScreen(){
       fill(209, 210, 211); // fill for unwanted beat
     }
     //rectMode(RADIUS);
-    rect(45+i*32,1.7*height/5+5,30,30,5);
+    rect(45+i*32,1.7*300/5+5,30,30,5);
     
     if(int(population.fittest.charAt(i+32))==49){
       fill(255,0,255);
     } else {
       fill(209, 210, 211);
     }
-    rect(45+i*32,2.4*height/5+5,30,30,5);
+    rect(45+i*32,2.4*300/5+5,30,30,5);
+  }
+  
+   for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
+    if(int(population.fittest.charAt(i))==49){
+      fill(0,255,0);
+    } else {
+      fill(209, 210, 211);
+    }
+    rect(45+i*32,3.8*300/5+5,30,30,5);
+    
+    if(int(population.fittest.charAt(i+16))==49){
+      fill(255,0,0); // fill for wanted beat 
+    } else {
+      fill(209, 210, 211); // fill for unwanted beat
+    }
+    //rectMode(RADIUS);
+    rect(45+i*32,4.5*300/5+5,30,30,5);
+    
+    if(int(population.fittest.charAt(i+32))==49){
+      fill(255,0,255);
+    } else {
+      fill(209, 210, 211);
+    }
+    rect(45+i*32,5.2*300/5+5,30,30,5);
   }
   
   stroke(200);
