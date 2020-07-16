@@ -21,7 +21,7 @@
   private color c_light= color(51, 64, 80);
 
   private color c_primary= color(33, 115, 139);
-  private color c_hover = color(32, 155, 160);
+  private color c_hover = color(28, 114, 252);
 
 
   private color c_text_color = color(255);
