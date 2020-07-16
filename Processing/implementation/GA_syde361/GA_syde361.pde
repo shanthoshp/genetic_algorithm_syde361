@@ -34,12 +34,14 @@ CallbackListener cb;
 //ControlFont font = new ControlFont(f,14);
 Slider2D s;
 Button pause;
+Button add;
 Knob soundLevel;
 int changeScreen;
 int pauseScreen;
 
 void setup() {
   size(1366, 768);
+  suggestions.append("000000000000000000000000000000000000000000000000");
   
   background(c_very_dark);
   targetMidi1 =   "0000000000000000"; // These need to be 16 long to work with the other parts
@@ -59,6 +61,15 @@ void setup() {
   
     cp5 = new ControlP5(this);
     screenListener = new ScreenSwitchListener();
+  cp5.addButton("new")
+  .setValue(0)  
+  .setPosition(575,275)
+  .setSize(30,30);
+  
+    cp5.addButton("back")
+  .setValue(0)  
+  .setPosition(15,275)
+  .setSize(30,30);
     
   cp5.addButton("Hip-hop")
      .setValue(1)
@@ -106,6 +117,16 @@ void setup() {
                   ;
   
   //pauseListener = new PauseListener();
+  //pause = cp5.addButton("Pause")
+  //           .setValue(1)
+  //           .setPosition(20,200)
+  //           .setSize(100,30)
+  //           .setColorBackground(color(51, 64, 80))
+  //           .setFont(font)
+  //           //.addListener(pauseListener)
+  //           .setVisible(false)
+  //           ;
+      
   pause = cp5.addButton("Pause")
              .setValue(1)
              .setPosition(20,200)
@@ -115,8 +136,7 @@ void setup() {
              //.addListener(pauseListener)
              .setVisible(false)
              ;
-      
-
+                    
     
     pause.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
@@ -127,6 +147,23 @@ void setup() {
       }
     }
   );
+}
+
+String newSuggestion(){
+  String new_suggestion = population.fittest;
+  suggestions.append(new_suggestion);
+  currentSuggestion = currentSuggestion + 1;
+  return new_suggestion;
+}
+
+public void controlEvent(ControlEvent theEvent) {
+  if (theEvent.getController().getName()=="new"){
+    newSuggestion();
+    println("NEW");
+  } else if (theEvent.getController().getName()=="back"){
+    currentSuggestion = currentSuggestion - 1; // WHEN IT GETS TO ZERO
+    println("BACK");
+  }
 }
 
 void draw() {
@@ -214,15 +251,17 @@ void drawScreen(){
     rect(45+i*32,2.4*300/5+5,30,30,5);
   }
   
+  //SUGGESTIONS
+  String current = suggestions.get(currentSuggestion);
    for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
-    if(int(population.fittest.charAt(i))==49){
+    if(int(current.charAt(i))==49){
       fill(0,255,0);
     } else {
       fill(209, 210, 211);
     }
     rect(45+i*32,3.8*300/5+5,30,30,5);
     
-    if(int(population.fittest.charAt(i+16))==49){
+    if(int(current.charAt(i+16))==49){
       fill(255,0,0); // fill for wanted beat 
     } else {
       fill(209, 210, 211); // fill for unwanted beat
@@ -230,7 +269,7 @@ void drawScreen(){
     //rectMode(RADIUS);
     rect(45+i*32,4.5*300/5+5,30,30,5);
     
-    if(int(population.fittest.charAt(i+32))==49){
+    if(int(current.charAt(i+32))==49){
       fill(255,0,255);
     } else {
       fill(209, 210, 211);
