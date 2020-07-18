@@ -70,4 +70,35 @@ class Population {
   }
     //generations++;
   }
+  
+  //TO DO: Currently the beats for each case was randomly chosen. We need to discuss what beats are appropriate for each case
+  void playSound() {
+    
+    score.empty();
+    
+    int[] midi1 = new int[16];
+    int[] midi2 = new int[16];
+    int[] midi3 = new int[16];
+    
+    for (int i = 0; i < 16; i++){ 
+      midi1[i] = int(fittest.charAt(i));
+      midi2[i] = int(fittest.charAt(i+16));
+      midi3[i] = int(fittest.charAt(i+32));
+    }
+    
+    for (int i = 0; i < 16; i++){    
+      if (midi1[i]==49) {
+        score.addNote(i/1, 9, 0, 40, 80, 0.25, 0.8, 64); //kick
+      }
+      if (midi2[i]==49) {
+        score.addNote(i/1, 9, 0, 44, 80, 0.25, 0.8, 64); //closed hat
+      }
+      
+      if (midi3[i]==49) {
+        score.addNote(i/1, 9, 0, 60, 80, 0.25, 0.8, 64); //open hat
+      }
+    }
+ 
+   score.play();
+  }
 }
