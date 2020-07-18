@@ -86,22 +86,17 @@ class Population {
       midi3[i] = int(fittest.charAt(i+32));
     }
     
-    for (int i = 0; i < 16; i++){
-      if (midi1[i]==49 && midi2[i]==49 && midi3[i]==49) {
-        score.addNote(i/1, 9, 0, 46, 80, 0.25, 0.8, 64);
-      } else if (midi1[i]==49 && midi2[i]==49 && midi3[i]==48) {
-         score.addNote(i/1, 9, 0, 38, 100, 0.25, 0.8, 64);
-      } else if (midi1[i]==48 && midi2[i]==49 && midi3[i]==49) {
-         score.addNote(i/1, 9, 0, 38, 80, 0.25, 0.8, 64);
-      } else if (midi1[i]==49 && midi2[i]==48 && midi3[i]==49) {
-         score.addNote(i/1, 9, 0, 38, 60, 0.25, 0.8, 64);
-      } else if (midi1[i]==49 && midi2[i]==48 && midi3[i]==48) {
-         score.addNote(i/1, 9, 0, 36, 50, 0.25, 0.8, 64);
-      } else if (midi1[i]==48 && midi2[i]==48 && midi3[i]==49) {
-         score.addNote(i/1, 9, 0, 36, 70, 0.25, 0.8, 64);
-      } else if (midi1[i]==48 && midi2[i]==49 && midi3[i]==48) {
-         score.addNote(i/1, 9, 0, 36, 100, 0.25, 0.8, 64);
-      }     
+    for (int i = 0; i < 16; i++){    
+      if (midi1[i]==49) {
+        score.addNote(i/1, 9, 0, 40, 80, 0.25, 0.8, 64); //kick
+      }
+      if (midi2[i]==49) {
+        score.addNote(i/1, 9, 0, 44, 80, 0.25, 0.8, 64); //closed hat
+      }
+      
+      if (midi3[i]==49) {
+        score.addNote(i/1, 9, 0, 60, 80, 0.25, 0.8, 64); //open hat
+      }
     }
  
    score.play();
