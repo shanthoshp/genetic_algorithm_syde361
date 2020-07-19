@@ -1,3 +1,4 @@
+int count = 0;
 
 class Population {
   
@@ -40,6 +41,7 @@ class Population {
   
   
   void updateGA(float mutationRate){
+    count ++;
     float maxFit = 0;
     for (int i = 0; i < population.length; i++) {
     population[i].calcFitness(target);
