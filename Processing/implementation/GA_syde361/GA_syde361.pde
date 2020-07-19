@@ -32,6 +32,7 @@ CallbackListener cb;
 //PauseListener pauseListener;
 //ControlFont font = new ControlFont(f,14);
 Slider2D s;
+Slider s1;
 Button pause;
 Button play;
 Button resume;
@@ -89,8 +90,22 @@ void setup() {
          .setColorForeground(color(180))
          .setColorActive(color(250))
          .setDecimalPrecision(1)
+         .setCaptionLabel("")
          .setVisible(false)
          ;
+       
+ s1 = cp5.addSlider("tempo")
+     .setPosition(680,174)
+     .setRange(50,180)
+     .setSize(100,15)
+     .setCaptionLabel("")
+     .setColorBackground(color(40))
+     .setColorForeground(color(180))
+     .setColorActive(color(250))
+     .setVisible(false);
+     ;
+     cp5.getController("tempo").getValueLabel().setColor(color(40));
+     //cp5.getController("tempo").getValueLabel().align(ControlP5.RIGHT, CENTER).setColor(color(40));
          
   cp5.getController("MutaGen")
      .getValueLabel()
@@ -100,7 +115,7 @@ void setup() {
   soundLevel = cp5.addKnob("volume")
                   .setRange(0,10)
                   .setValue(5)
-                  .setPosition(710,180)
+                  .setPosition(705,215)
                   .setRadius(25)
                   .setDragDirection(Knob.HORIZONTAL)
                   .showTickMarks()
@@ -214,10 +229,13 @@ void draw() {
           beat = beat%targetMidi1.length();
           
           s.setVisible(true);
+          s1.setVisible(true);
           soundLevel.setVisible(true);
           cp5.getController("Pause").setVisible(true);
           cp5.getController("Play").setVisible(true);
           cp5.getController("Generate").setVisible(true);
+
+          //s1.setCaptionLabel("BPM:");
 
           generations = int(s.getArrayValue()[0]);
           mutationRate = s.getArrayValue()[1];
@@ -239,9 +257,9 @@ void draw() {
 
 void drawScreen(){
    background(c_mid);
-   textFont(f,18);
-   
-  fill(200,200,255);
+   textFont(f,12);
+   fill(255,255,255);
+  //fill(200,200,255);   // light blue text
    //text("MIDI 1", 550, height/5+9.5);
    
   //rect(10+beat*28.5,height/5+50,24,5); // these are the dashes that keep time
@@ -250,7 +268,8 @@ void drawScreen(){
   
   textAlign(CENTER);
   text("Number of Generations: " + count, width/2,60);
-  
+  text("BPM", 690, 199);
+    
   for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
     if(int(population.fittest.charAt(i))==49){
       fill(0,255,0);
