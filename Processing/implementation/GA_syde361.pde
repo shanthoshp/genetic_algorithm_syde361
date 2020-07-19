@@ -155,6 +155,7 @@ void setup() {
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
           cp5.getController("Play").setVisible(false);
+          pauseScreen = (int)theEvent.getController().getValue();
           population.playSound(volume);
         }
       }
