@@ -8,6 +8,7 @@
  Controllers:
  -Button
  -ImageButton Basic
+    - imagebutton toggle, which is the appearance of an image button but the functionality of a toggle
  -Tooltip
  -Slider
  -Toggle
@@ -17,8 +18,9 @@
  */
   //Colors
   private color black = color (0,0,0);
-  private color beat_dark = color(130, 130, 130);
   private color white = color (255);
+  private color beat_dark = color(130, 130, 130);
+  private color beat_med = color(189, 189, 189);
   
   private color row1_on = color(92, 204, 208);
   private color row2_on = color(250, 194, 69);
@@ -199,6 +201,24 @@
 
     return false;
   }
+  
+  //Image Button Toggle - image that is actually a toggle for some boolean
+  boolean ImageButtonToggle(boolean value, PImage img, PImage hover, int x, int y, int w, int h) {
+    rect(x, y, w, h);
+    image(img, x, y, w, h);
+    
+    if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
+      rect(x, y, w, h);
+      image(hover, x, y, w, h);
+      
+      if (clicked && canClick) {
+        canClick=false;
+        value=!value;  
+        return value;
+      }
+    }
+    return value;
+  }
 
   //Basic ImageButton with padding
   boolean ImageButton(PImage img, int x, int y, int w, int h, int padding) {
@@ -285,6 +305,8 @@
   }
 
 
+//For text inputs
+
   void mousePressed() {
     clicked = true;
   }
@@ -321,10 +343,11 @@
     }
   }
 
-
   private void EditText(String txt) {
     bufferText = txt;
   }
+  
+  //generic text input class 
   
   public class TextInput {
     String text = "";
@@ -340,6 +363,101 @@
     }
 
     public TextInput(String t, String l) {
+      this.hint = t;
+      this.label = l;
+    }
+
+    //Text Input
+    public String draw(int x, int y, int w, int h) {
+      fill(200);
+      textSize(12);
+      textAlign(LEFT, BOTTOM);
+      text(label, x, y-21, w, 20);
+      if (active) {
+        //Edit Text
+        fill(c_dark);
+        stroke(c_light);
+        rect(x, y, w, h);
+        noStroke();
+        fill(c_text_color);
+        textSize(15);
+        textAlign(CENTER, CENTER);
+        text = bufferText;
+        text(text, x, y, w, h);
+
+        if (mouseX >= x && mouseX <= x+w && 
+          mouseY >= y && mouseY <= y+h) {
+          //Inside
+        } else {
+          if (clicked) {
+            doneText = true;
+            //canClick = true;
+            active=false;
+          }
+        }
+
+        if (doneText) {
+          text = bufferText;
+          active = false;
+          doneText = false;
+        }
+      } else if (mouseX >= x && mouseX <= x+w && 
+        mouseY >= y && mouseY <= y+h) {
+        fill(c_hover);
+        rect(x, y, w, h);
+        fill(c_text_color);
+        textSize(15);
+        textAlign(CENTER, CENTER);
+        text(text, x, y, w, h);
+        if (clicked && canClick) {
+          fill(c_light);
+          rect(x, y, w, h);
+          fill(255);
+          text(text, x, y, w, h);
+          EditText(text);
+          canClick = false;
+          active = true;
+        }
+      } else {
+        fill(c_light);
+        stroke(c_dark);
+        rect(x, y, w, h);
+        fill(c_text_color);
+        textSize(15);
+        textAlign(CENTER, CENTER);
+        text(text, x, y, w, h);
+        active = false;
+      }
+      if (text.length() == 0) {
+        fill(150);
+        textSize(15);
+        textAlign(CENTER, CENTER);
+        text(hint, x, y, w, h);
+      }
+      return text;
+    }
+
+    public String getText() {
+      return text;
+    }
+  }
+  
+  //kim's "improved" text input class made for title
+  
+  public class TextInputSpecial {
+    String text = "";
+    boolean active = false;
+    String hint = "";
+    String label = "";
+
+    public TextInputSpecial() {
+    }
+
+    public TextInputSpecial(String t) {
+      this.hint = t;
+    }
+
+    public TextInputSpecial(String t, String l) {
       this.hint = t;
       this.label = l;
     }
@@ -389,10 +507,11 @@
 
         if (doneText) {
           //replace if something new has been written, otherwise leave as is
-          if (bufferText!=old_text){
-            text = bufferText;
-            old_text=text;
-          }
+          print ("here is");
+          print(bufferText);
+          
+          old_text = text;
+          text = bufferText;
 
           active = false;
           doneText = false;
@@ -403,7 +522,8 @@
           fill(255);
           text(text, x, y, w, h);
           //start recording new text
-          int old_length = old_text.length()>0? old_text.length(): 0;
+          int old_length = (old_text.length()>0 && old_text!=hint)? old_text.length(): 0;
+          print(old_length);
           EditText(text.substring(old_length,text.length()));
           
           canClick = false;
@@ -417,7 +537,8 @@
         fill(255);
         text(old_text!=""?old_text:hint, x, y, w, h);
       }
-      return text;
+      
+    return text;
     }
 
     public String getText() {
@@ -472,11 +593,96 @@
 
   //Toggle
   
-  public boolean Square(boolean value, int x, int y, int w, int h, int row) {
+  //Generic toggle class
+  public boolean Toggle(boolean value, int x, int y, int w, int h) {
+    fill(c_dark);
+    stroke(c_light);
+    rect(x, y, w, h, h/2);
+    int pos = 0;
+    if (value)
+      pos = w-h;
+    //Hover
+    if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h)
+    {
+
+      noStroke();
+
+      fill(red(c_hover), green(c_hover), blue(c_hover), 100);  
+      ellipse(x+h/2+pos, y+h/2, h-2, h-2);
+      fill(c_hover);
+      ellipse(x+h/2+pos, y+h/2, h-8, h-8);
+      noStroke();
+      if (clicked && canClick) {
+        value = !value;
+        canClick = false;
+        return value;
+      }
+    } 
+    //Normal
+    else {
+      fill(c_light);
+      stroke(c_light);
+      ellipse(x+h/2+pos, y+h/2, h-8, h-8);
+    }
+
+
+    return value;
+  }
+
+  public boolean Toggle(boolean value, int x, int y) {
+    return Toggle(value, x, y, 60, 30);
+  }
+
+  //Toggle
+  public boolean RadioButton(boolean value, int x, int y, int w, int h) {
+    fill(c_dark);
+    stroke(c_light);
+    rect(x, y, w, h, h/2);
+    int pos = 0;
+    if (value)
+      pos = w-h;
+    //Hover
+    if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h)
+    {
+      fill(c_light);
+      stroke(c_hover);
+      ellipse(1+x+h/2+pos, y+h/2, h-2, h-2);
+      noStroke();
+      if (clicked && canClick) {
+        value = !value;
+        canClick = false;
+        return value;
+      }
+    } 
+    //Normal
+    else {
+
+
+      fill(c_light);
+      stroke(c_light);
+      ellipse(x+h/2+pos, y+h/2, h-8, h-8);
+    }
+
+
+    return value;
+  }
+
+  public boolean Toggle(String text, boolean value, int x, int y, int w, int h) {
+    textSize(15);
+    fill(255);
+    textAlign(LEFT, CENTER);
+    text(text, x, y, w, h);
+    int pos_x = (int)textWidth(text);
+    return Toggle(value, x+10+pos_x, y, 60, 30);
+  }
+  
+  
+  //special toggle class styled specifically for drum machine
+  public boolean Square(boolean value, int x, int y, int w, int h, int row, boolean downbeat) {
     color on_color = row1_on;
     color hover_color = row1_hover;
     
-    //Pick colour based on row 
+    //Pick colour for 'on' and 'hover' based on row 
     switch (row) {
       case 0:  
         on_color = row1_on; 
@@ -518,55 +724,19 @@
       if (value){
         fill(on_color);}
       else {
-        fill(beat_dark);} 
+        if (downbeat){
+          fill(beat_med);}
+        else {
+          fill(beat_dark);
+        }
+      }
       rect(x,y,w,h,3);
     }
     return value;
   }
 
   public boolean Square(boolean value, int x, int y) {
-    return Square(value, x, y, 60, 30, 0);
-  }
-
-  //Toggle
-  public boolean RadioButton(boolean value, int x, int y, int w, int h) {
-    fill(c_dark);
-    stroke(c_light);
-    rect(x, y, w, h, h/2);
-    int pos = 0;
-    if (value)
-      pos = w-h;
-    //Hover
-    if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h)
-    {
-      fill(c_light);
-      stroke(c_hover);
-      ellipse(1+x+h/2+pos, y+h/2, h-2, h-2);
-      noStroke();
-      if (clicked && canClick) {
-        value = !value;
-        canClick = false;
-        return value;
-      }
-    } 
-    //Normal
-    else {
-      fill(c_light);
-      stroke(c_light);
-      ellipse(x+h/2+pos, y+h/2, h-8, h-8);
-    }
-
-
-    return value;
-  }
-
-  public boolean Square(String text, boolean value, int x, int y, int w, int h) {
-    textSize(15);
-    fill(255);
-    textAlign(LEFT, CENTER);
-    text(text, x, y, w, h);
-    int pos_x = (int)textWidth(text);
-    return Square(value, x+10+pos_x, y, 60, 30, 0);
+    return Square(value, x, y, 60, 30, 0, false);
   }
 
   /*--- Slider ---

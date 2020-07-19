@@ -27,15 +27,17 @@ PFont f;
 int instruments = 3;
 int beats = 16;
 boolean[][] sequencer_states = new boolean[instruments][beats];
+//track if any of the instrument lines have been selected by the instrument button
+boolean[] instrument_buttons = new boolean[instruments];
 
-//storage of the user's current song (just a string-ification of sequencer_states)
-//do we need this? probably...
 
 //UI variables
-int margin_left = 227;
+int margin_left = 205;
 int margin_top = 120;
 int title_height = 100;
-TextInput song_title= new TextInput("my_beat");
+TextInputSpecial song_title= new TextInputSpecial("my_beat");
+PImage[] instrument_icons = new PImage[instruments];
+PImage[] instrument_hovers = new PImage[instruments];
 
 
 void setup() {
@@ -58,10 +60,19 @@ void setup() {
   
   // Initialize sequencer_states
   for (int i = 0; i < instruments; i++) {
+    instrument_buttons[i]=false;
     for (int j = 0; j < beats; j++) {
       sequencer_states[i][j] = false;
     }
   }
+  
+  //Load icons for sequencer
+  instrument_icons[0] = loadImage("assets/kick.png");
+  instrument_icons[1] = loadImage("assets/snare.png");
+  instrument_icons[2] = loadImage("assets/clap.png");
+  instrument_hovers[0] = loadImage("assets/kick-hover.png");
+  instrument_hovers[1] = loadImage("assets/snare-hover.png");
+  instrument_hovers[2] = loadImage("assets/clap-hover.png");
 }
 
 void draw() {
@@ -106,7 +117,6 @@ void drawScreen(){
    textFont(f,18);
    
    String title = song_title.draw(margin_left,margin_top,900,70);
-   //print(title);
    
    drawDrumMachine();
        
@@ -140,10 +150,13 @@ void drawScreen(){
   
   void drawDrumMachine (){
    for (int i = 0; i < instruments; i++){
+     instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+title_height+i*57, 50, 50);
+     print(instrument_buttons[i]);
      for (int j=0; j < beats; j++){
-       sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ j*57, margin_top+title_height+i*57, 50, 50, i);
+       boolean downbeat = (j%4 == 0);
+       sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+i*57, 50, 50, i, downbeat);
      }
-   }
-   
-   boolean buttontest = Button("test", 0, 500);
+   }   
+        print('\n');
+
  }
