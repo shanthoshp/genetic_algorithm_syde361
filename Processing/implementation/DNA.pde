@@ -1,5 +1,7 @@
 class DNA {
-
+  int sym1;
+  //int sym2;
+  int density;
   // The genetic sequence
   char[] genes;
   float fitness;
@@ -24,6 +26,27 @@ class DNA {
           score++;
         }
      }
+     
+     for (int i = 17; i < 32; i++){
+       if( genes[i] != genes[i-1]){
+         sym1++;
+       }
+     }
+     if(sym1 < 11){
+         score -= 8;
+     }
+     
+     for (int i = 33; i < target.length(); i++){
+       if(genes[i] == 49){
+         density++;
+       }
+       
+       
+     }
+     if(density > 2){
+       score -= 10;
+     }
+     
      fitness = (float)score / (float)target.length();
     }
     
