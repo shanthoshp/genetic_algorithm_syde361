@@ -106,7 +106,7 @@ void drawScreen(){
    textFont(f,18);
    
    String title = song_title.draw(margin_left,margin_top,900,70);
-   print(title);
+   //print(title);
    
    drawDrumMachine();
        
@@ -141,15 +141,9 @@ void drawScreen(){
   void drawDrumMachine (){
    for (int i = 0; i < instruments; i++){
      for (int j=0; j < beats; j++){
-       sequencer_states[i][j] = Toggle(sequencer_states[i][j], margin_left+ j*57, margin_top+title_height+i*57, 50, 50);
+       sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ j*57, margin_top+title_height+i*57, 50, 50, i);
      }
    }
    
-   for (int i = 0; i < instruments; i++){
-     for (int j=0; j < beats; j++){
-       print(sequencer_states[i][j]);
-     }
-     print('\n');
-   }
-   print ('\n');
+   boolean buttontest = Button("test", 0, 500);
  }

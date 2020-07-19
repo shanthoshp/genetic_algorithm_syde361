@@ -11,6 +11,7 @@
  -Tooltip
  -Slider
  -Toggle
+   - Squares, which is for the drum machine and is based on toggle
  -Card
  -Movable Cards
  */
@@ -18,6 +19,15 @@
   private color black = color (0,0,0);
   private color beat_dark = color(130, 130, 130);
   private color white = color (255);
+  
+  private color row1_on = color(92, 204, 208);
+  private color row2_on = color(250, 194, 69);
+  private color row3_on = color(225, 91, 139);
+  //Backup in case I can't get hover states to work like I want
+  private color row1_hover = color(140, 224, 227);
+  private color row2_hover = color(255, 211, 111);
+  private color row3_hover = color(237, 146, 179);
+
   
   
   private color c_very_dark = color(36, 37, 46);
@@ -38,6 +48,8 @@
 
   //For text Input/Edit
   String bufferText = null;
+      String old_text = "";
+
   boolean doneText = false;
 
   //Default sizes
@@ -284,7 +296,10 @@
 
   void keyPressed() {
     if (keyCode == BACKSPACE) {
-      if (bufferText.length() > 0) {
+      if (old_text.length()>0){
+        bufferText="";
+        old_text="";}
+      else if (bufferText.length() > 0) {
         bufferText = bufferText.substring(0, bufferText.length()-1);
       }
     } else if (keyCode == DELETE) {
@@ -316,7 +331,6 @@
     boolean active = false;
     String hint = "";
     String label = "";
-    String old_text = "";
 
     public TextInput() {
     }
@@ -346,9 +360,12 @@
       
       if (active) {
         //Edit Text
+        //if no existing title, just show hint
         text(old_text!=""?old_text:hint,x,y-21,w, 20);
+        //cursor at left when empty
         rect(x,y+5,5,h-5);
         
+        //highlight width of whatever is showing up in the text        
         fill(145, 193, 231);
         if(textWidth(bufferText)>0){
            rect(x,y,textWidth(bufferText), h);
@@ -356,36 +373,39 @@
            rect(x,y,old_text!=""?textWidth(old_text):textWidth(hint), h);
         }
         text = bufferText;
-        fill(black);
         fill(white);
         text(text, x, y, w, h);
 
         if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
           //Inside
         } 
-        else {
+        else { //clicked outside of text area, therefore done editing
           if (clicked) {
             doneText = true;
-            //canClick = true;
+            canClick = true;
             active=false;
           }
         }
 
         if (doneText) {
-          text = bufferText;
-          old_text=text;
+          //replace if something new has been written, otherwise leave as is
+          if (bufferText!=old_text){
+            text = bufferText;
+            old_text=text;
+          }
+
           active = false;
           doneText = false;
         }
       } else if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
         text(text, x, y, w, h);
         if (clicked && canClick) {
-          fill(c_light);
-          //rect(x, y, w, h);
           fill(255);
           text(text, x, y, w, h);
+          //start recording new text
           int old_length = old_text.length()>0? old_text.length(): 0;
           EditText(text.substring(old_length,text.length()));
+          
           canClick = false;
           active = true;
         }
@@ -451,41 +471,61 @@
   }
 
   //Toggle
-  public boolean Toggle(boolean value, int x, int y, int w, int h) {
-    fill(c_dark);
-    stroke(c_light);
-    rect(x, y, w, h, 3);
-    int pos = 0;
-    if (value)
-      pos = w-h;
-
+  
+  public boolean Square(boolean value, int x, int y, int w, int h, int row) {
+    color on_color = row1_on;
+    color hover_color = row1_hover;
+    
+    //Pick colour based on row 
+    switch (row) {
+      case 0:  
+        on_color = row1_on; 
+        hover_color = row1_hover; 
+        break;
+      case 1:  
+        on_color = row2_on;  
+        hover_color = row2_hover;
+        break;
+      case 2:  
+        on_color = row3_on;  
+        hover_color = row3_hover;
+        break;
+      default: on_color = color(200,200,200); break;
+    }
+    
     //Hover
     if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h)
     {
-
-      noStroke();
-
-      fill(c_hover);
-      rect(x,y,w,h);
-      noStroke();
       if (clicked && canClick) {
         canClick = false;
         value = !value;
         return value;
       }
+      
+      //if (value){
+      //  fill(beat_dark);}
+      //else {
+      //  fill(on_color);
+      //}
+      
+      fill(hover_color);
+    
+      rect(x,y,w,h, 3);
     } 
+
     //Normal
     else {
-      fill(beat_dark);
-      rect(x,y,w,h, 3);
+      if (value){
+        fill(on_color);}
+      else {
+        fill(beat_dark);} 
+      rect(x,y,w,h,3);
     }
-
-
     return value;
   }
 
-  public boolean Toggle(boolean value, int x, int y) {
-    return Toggle(value, x, y, 60, 30);
+  public boolean Square(boolean value, int x, int y) {
+    return Square(value, x, y, 60, 30, 0);
   }
 
   //Toggle
@@ -511,8 +551,6 @@
     } 
     //Normal
     else {
-
-
       fill(c_light);
       stroke(c_light);
       ellipse(x+h/2+pos, y+h/2, h-8, h-8);
@@ -522,13 +560,13 @@
     return value;
   }
 
-  public boolean Toggle(String text, boolean value, int x, int y, int w, int h) {
+  public boolean Square(String text, boolean value, int x, int y, int w, int h) {
     textSize(15);
     fill(255);
     textAlign(LEFT, CENTER);
     text(text, x, y, w, h);
     int pos_x = (int)textWidth(text);
-    return Toggle(value, x+10+pos_x, y, 60, 30);
+    return Square(value, x+10+pos_x, y, 60, 30, 0);
   }
 
   /*--- Slider ---
