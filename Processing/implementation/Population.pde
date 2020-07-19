@@ -72,7 +72,7 @@ class Population {
   }
   
   //TO DO: Currently the beats for each case was randomly chosen. We need to discuss what beats are appropriate for each case
-  void playSound() {
+  void playSound(double volume) {
     
     score.empty();
     
@@ -88,14 +88,14 @@ class Population {
     
     for (int i = 0; i < 16; i++){    
       if (midi1[i]==49) {
-        score.addNote(i/1, 9, 0, 40, 80, 0.25, 0.8, 64); //kick
+        score.addNote(i/1, 9, 0, 40, volume, 0.25, 0.8, 64); //kick
       }
       if (midi2[i]==49) {
-        score.addNote(i/1, 9, 0, 44, 80, 0.25, 0.8, 64); //closed hat
+        score.addNote(i/1, 9, 0, 44, volume, 0.25, 0.8, 100); //closed hat
       }
       
       if (midi3[i]==49) {
-        score.addNote(i/1, 9, 0, 60, 80, 0.25, 0.8, 64); //open hat
+        score.addNote(i/1, 9, 0, 60, volume, 0.25, 0.8, 20); //open hat
       }
     }
  

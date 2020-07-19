@@ -23,7 +23,7 @@ Boolean currentlyOnFirst = true;
 Population population;
 int generations = 20;
 float startTime = millis(); 
-float tempo = 20;
+float tempo = 300;
 PFont f;
 
 ControlP5 cp5;
@@ -38,17 +38,18 @@ Button resume;
 Knob soundLevel;
 int changeScreen;
 int pauseScreen;
+double volume = 80;
 
 void setup() {
   size(800, 300);
   
-  score.tempo(112);
+  score.tempo(tempo);
 
   
   background(c_very_dark);
-  targetMidi1 =   "0000000000000000"; // These need to be 16 long to work with the other parts
-  targetMidi2 =  "1000101000001000"; // of the code. You can change their size, but would have
-  targetMidi3 =   "0001111111100010"; // adjsut some other parameters
+  targetMidi1 =   "1010000110100000"; // These need to be 16 long to work with the other parts
+  targetMidi2 =   "1010101011110100"; // of the code. You can change their size, but would have
+  targetMidi3 =   "0000100101101000"; // adjsut some other parameters
   target = targetMidi1 + targetMidi2 + targetMidi3;
   MidiBus.list(); 
   myBus = new MidiBus(this, -1, 1);
@@ -116,7 +117,6 @@ void setup() {
              .setSize(100,30)
              .setColorBackground(color(51, 64, 80))
              .setFont(font)
-             //.addListener(pauseListener)
              .setVisible(false)
              ;
       
@@ -127,13 +127,12 @@ void setup() {
              .setSize(100,30)
              .setColorBackground(color(51, 64, 80))
              .setFont(font)
-             //.addListener(pauseListener)
              .setVisible(false)
              ;
      
      
   resume = cp5.addButton("Generate")
-             .setValue(1)
+             .setValue(0)
              .setPosition(280,200)
              .setSize(100,30)
              .setColorBackground(color(51, 64, 80))
@@ -156,8 +155,15 @@ void setup() {
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
           cp5.getController("Play").setVisible(false);
-          pauseScreen = (int)theEvent.getController().getValue();
-          population.playSound();
+          population.playSound(volume);
+        }
+      }
+    }
+    );
+    soundLevel.addCallback(new CallbackListener(){
+      public void controlEvent(CallbackEvent theEvent){
+        if(theEvent.getAction() == ControlP5.ACTION_RELEASED || theEvent.getAction() == ControlP5.ACTION_RELEASEDOUTSIDE){
+          volume = cp5.getController("volume").getValue()*16;
         }
       }
     }
@@ -167,7 +173,8 @@ void setup() {
     resume.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
-          draw();
+          pauseScreen = (int)theEvent.getController().getValue();
+          //draw();
         }
       }
     }
@@ -198,6 +205,9 @@ void draw() {
         target = targetMidi1 +targetMidi2 + targetMidi3;
         //text("Here",20,100);
         redraw();
+        //for(int i = 0; i <generations; i++){
+        //      population.updateGA(mutationRate);
+        //    }
         if(millis()-startTime > 60/tempo/4*1000){
           startTime = millis();
           beat++;
