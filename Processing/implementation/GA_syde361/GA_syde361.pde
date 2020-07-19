@@ -47,9 +47,9 @@ void setup() {
 
   
   background(c_very_dark);
-  targetMidi1 =   "1010101010101010"; // These need to be 16 long to work with the other parts
-  targetMidi2 =   "0000100000001000"; // of the code. You can change their size, but would have
-  targetMidi3 =   "1000000010000000"; // adjsut some other parameters
+  targetMidi1 =   "1010000000100100"; // Kick drum
+  targetMidi2 =   "1111111011111011"; // Closed hi-hat
+  targetMidi3 =   "0000000100000100"; // Open hi-hat
   target = targetMidi1 + targetMidi2 + targetMidi3;
   MidiBus.list(); 
   myBus = new MidiBus(this, -1, 1);
