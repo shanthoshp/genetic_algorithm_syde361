@@ -20,7 +20,7 @@ Boolean currentlyOnFirst = true;
 Population population;
 int generations = 10;
 float startTime = millis(); 
-float tempo = 20;
+float tempo = 65;
 PFont f;
 
 //Storage of the toggle states of each button in the sequencer
@@ -76,40 +76,40 @@ void setup() {
 }
 
 void draw() {
-      //if(currentlyOnFirst == true){
-      //  beginCard("Welcome to UCompose, please select a genre of music:", 0, 0, 800, 600);
+      if(currentlyOnFirst == true){
+        beginCard("Welcome to UCompose, please select a genre of music:", 0, 0, 800, 600);
         
-      //  //text(,20,70);
-      //  if(Button("Hip-hop",20,100)){
-      //    currentlyOnFirst = false;
+        //text(,20,70);
+        if(Button("Hip-hop",20,100)){
+          currentlyOnFirst = false;
           
-      //  }
-        
-      //  if(Button("R&B",20,150)){
-      //    //screen++;
-      //  }
-        
-      //  if(Button("Rock",20,200)){
-      //    //screen++;
-      //  }
-      //endCard();
-      //}
-      //else{
-        
-
-        drawScreen();
-
-        redraw();
-        
-        if(millis()-startTime > 60/tempo/4*1000){
-          startTime = millis();
-          beat++;
-          beat = beat%targetMidi1.length();
-          
-          population.updateGA();
-          //text(population.fittest.substring(0,16),200,2*height/7);
         }
-      //}
+        
+        if(Button("R&B",20,150)){
+          //screen++;
+        }
+        
+        if(Button("Rock",20,200)){
+          //screen++;
+        }
+      endCard();
+      }
+      else{
+        
+
+      drawScreen();
+
+      redraw();
+      
+      if(millis()-startTime > 60/tempo/4*1000){
+        startTime = millis();
+        beat++;
+        beat = beat%targetMidi1.length();
+        
+        population.updateGA();
+        //text(population.fittest.substring(0,16),200,2*height/7);
+      }
+    }
   }
 
 void drawScreen(){
@@ -148,15 +148,18 @@ void drawScreen(){
   //  noStroke();
 }
   
-  void drawDrumMachine (){
-   for (int i = 0; i < instruments; i++){
-     instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+title_height+i*57, 50, 50);
-     print(instrument_buttons[i]);
-     for (int j=0; j < beats; j++){
-       boolean downbeat = (j%4 == 0);
-       sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+i*57, 50, 50, i, downbeat);
-     }
-   }   
-        print('\n');
-
- }
+void drawDrumMachine (){
+  //instruments and beats
+  for (int i = 0; i < instruments; i++){
+    instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+title_height+i*57, 50, 50);
+    for (int j=0; j < beats; j++){
+      boolean downbeat = (j%4 == 0);
+      sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+i*57, 50, 50, i, downbeat);
+    }
+  }
+  
+  //progress indicating highlight
+  fill(255,150);
+  rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
+  
+}
