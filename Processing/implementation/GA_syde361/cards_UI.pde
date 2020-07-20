@@ -179,6 +179,57 @@
 
     return false;
   }
+  
+  boolean SuggestionsButton(String text, int x, int y, int w, int h) {
+    if (mouseX >= x && mouseX <= x+w && 
+      mouseY >= y && mouseY <= y+h) {
+      fill(white);
+      rect(x, y, w, h);
+      fill(black);
+      textSize(15);
+      textAlign(CENTER, CENTER);
+      text(text, x, y, w, h);
+      if (clicked && canClick) {
+        canClick = false;
+        fill(white);
+        rect(x, y, w, h);
+        text(text, x, y, w, h);
+        println(currentSuggestion);
+        if (text=="<"){
+          currentSuggestion = currentSuggestion -1;
+          suggestion_states = stringToArray(suggestions.get(currentSuggestion));
+          nextButtonLabel = ">";
+          if(currentSuggestion==1){
+            showBackButton=false;
+          }
+        } else if(text==">"){
+          currentSuggestion = currentSuggestion + 1;
+          suggestion_states = stringToArray(suggestions.get(currentSuggestion));
+          showBackButton=true;
+          if(currentSuggestion==suggestions.size()-1){
+            nextButtonLabel = "+";
+          }
+        } else if(text=="+"){
+          String suggest = newSuggestion();
+          suggestion_states = stringToArray(suggest);
+          showBackButton=true;
+        }
+       println(currentSuggestion);
+        return true;
+      }
+    } else {
+      fill(white);
+      rect(x, y, w, h);
+      fill(black);
+      textSize(15);
+      textAlign(CENTER, CENTER);
+      text(text, x, y, w, h);
+      return false;
+    }
+
+    return false;
+  }
+  
   //Basic Image Button
   boolean ImageButton(PImage img, int x, int y, int w, int h) {
     if (mouseX >= x && mouseX <= x+w && 

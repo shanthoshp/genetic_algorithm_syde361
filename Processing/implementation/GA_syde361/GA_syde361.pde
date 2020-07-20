@@ -16,6 +16,11 @@ int midi1Note = 36;
 int midi2Note = 38;
 int midi3Note = 42;
 
+StringList suggestions = new StringList();
+int currentSuggestion = 0;
+String nextButtonLabel = "+";
+Boolean showBackButton = false;
+
 float mutationRate = 0.001; 
 int totalPopulation = 150;
 int beat = 0;
@@ -45,6 +50,7 @@ double volume = 80;
 int instruments = 3;
 int beats = 16;
 boolean[][] sequencer_states = new boolean[instruments][beats];
+boolean[][] suggestion_states = new boolean[instruments][beats];
 //track if any of the instrument lines have been selected by the instrument button
 boolean[] instrument_buttons = new boolean[instruments];
 
@@ -61,6 +67,7 @@ PImage[] instrument_hovers = new PImage[instruments];
 void setup() {
   size(1366, 768);
   background(black);
+  suggestions.append("000000000000000000000000000000000000000000000000");
   
   score.tempo(tempo);
   
@@ -230,6 +237,13 @@ void setup() {
     );
 }
 
+String newSuggestion(){
+  String new_suggestion = population.fittest;
+  suggestions.append(new_suggestion);
+  currentSuggestion = currentSuggestion + 1;
+  return new_suggestion;
+}
+
 void draw() {
       if(changeScreen == 0){
         beginCard("Welcome to UCompose, please select a genre of music:", 0, 0, 800, 600);
@@ -294,7 +308,8 @@ void drawScreen(){
    textFont(f,18);
    
    String title = song_title.draw(margin_left,margin_top,900,70);
-   
+    
+  
    drawDrumMachine();
    drawSuggestions();
 
@@ -350,14 +365,22 @@ void drawDrumMachine (){
 }
 
 void drawSuggestions (){
+    textFont(f,28);
+   text("Suggestions for you: ",margin_left,margin_top+machine_height-40);
+   
   //instruments and beats
   for (int i = 0; i < instruments; i++){
-    instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+machine_height+title_height+i*57, 50, 50);
+    instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+(2*machine_height/3)+title_height+i*57, 50, 50);
     for (int j=0; j < beats; j++){
       boolean downbeat = (j%4 == 0);
-      sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+machine_height+i*57, 50, 50, i, downbeat);
+      suggestion_states[i][j] = Square(suggestion_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+(2*machine_height/3)+i*57, 50, 50, i, downbeat);
     }
   }
+  
+  if (showBackButton==true){
+  SuggestionsButton("<",margin_left-57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57, 50, 50);
+  }
+  SuggestionsButton(nextButtonLabel,margin_left+(beats+1)*57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57, 50, 50);
   
   //progress indicating highlight
   fill(255,150);
@@ -378,6 +401,32 @@ class ScreenSwitchListener implements ControlListener {
       
       
   }
+}
+
+boolean[][] stringToArray(String sequence) {
+ boolean[][] sequence_array = new boolean[instruments][beats];
+  int i = 0;
+    for (int j=0; j<instruments; j++){
+      for (int k=0; k<beats; k++){
+        if(sequence.charAt(i)=='0'){
+          sequence_array[j][k] = false;
+        } else {
+          sequence_array[j][k] = true;
+        }
+      i++;
+    }
+    }
+   return sequence_array;
+}
+
+String arrayToString(boolean[][] sequence_array){
+  String sequence = "";
+  for (int j=0; j<beats; j++){
+      for (int k=0; k<beats; k++){
+      sequence = sequence + str(sequence_array[j][k]);
+    }
+    }
+    return sequence;
 }
 
 //class PauseListener implements ControlListener {
