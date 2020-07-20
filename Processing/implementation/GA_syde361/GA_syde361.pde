@@ -16,6 +16,12 @@ int midi1Note = 36;
 int midi2Note = 38;
 int midi3Note = 42;
 
+StringList suggestions = new StringList();
+int currentSuggestion = 0;
+String nextButtonLabel = "+";
+Boolean showBackButton = false;
+Boolean showSuggestions = false;
+
 float mutationRate = 0.001; 
 int totalPopulation = 150;
 int beat = 0;
@@ -45,8 +51,11 @@ double volume = 80;
 int instruments = 3;
 int beats = 16;
 boolean[][] sequencer_states = new boolean[instruments][beats];
+boolean[][] suggestion_states = new boolean[instruments][beats];
+
 //store the strings corresponding to sequencer states (this is the user's beat as a string for each instrument)
 String user_beat;
+
 //track if any of the instrument lines have been selected by the instrument button
 boolean[] instrument_buttons = new boolean[instruments];
 
@@ -63,6 +72,7 @@ PImage[] instrument_hovers = new PImage[instruments];
 void setup() {
   size(1366, 768);
   background(black);
+  suggestions.append("000000000000000000000000000000000000000000000000");
   
   
   
@@ -132,10 +142,10 @@ void setup() {
          ;
        
  s1 = cp5.addSlider("tempo")
-     .setPosition(680,174+machine_height)
+     .setPosition(margin_left+60+((beats-6)*57),margin_top+50)
      .setRange(50,180)
-     .setSize(100,15)
-     .setCaptionLabel("")
+     .setSize(130,30)
+     .setCaptionLabel("BPM")
      .setColorBackground(color(40))
      .setColorForeground(color(180))
      .setColorActive(color(250))
@@ -236,6 +246,13 @@ void setup() {
     );
 }
 
+String newSuggestion(){
+  String new_suggestion = population.fittest;
+  suggestions.append(new_suggestion);
+  currentSuggestion = currentSuggestion + 1;
+  return new_suggestion;
+}
+
 void draw() {
       if(changeScreen == 0){
         beginCard("Welcome to UCompose, please select a genre of music:", 0, 0, 800, 600);
@@ -266,14 +283,16 @@ void draw() {
           beat++;
           beat = beat%targetMidi1.length();
           
+
           //Each ControlP5 element is shown on the main beat maker page
           score.tempo(tempo*4);
-          s.setVisible(true);
+          //s.setVisible(true);
+
           s1.setVisible(true);
-          soundLevel.setVisible(true);
-          cp5.getController("Pause").setVisible(true);
-          cp5.getController("Play").setVisible(true);
-          cp5.getController("Generate").setVisible(true);
+          //soundLevel.setVisible(true);
+          //cp5.getController("Pause").setVisible(true);
+          //cp5.getController("Play").setVisible(true);
+          //cp5.getController("Generate").setVisible(true);
 
           generations = int(s.getArrayValue()[0]);
           mutationRate = s.getArrayValue()[1];
@@ -296,41 +315,46 @@ void drawScreen(){
    textFont(f,18);
    
    String title = song_title.draw(margin_left,margin_top,900,70);
-   
+   GetSuggestionsButton("Get Suggestions", margin_left+60+((beats-3)*57),margin_top+50,150,30);
+ 
    drawDrumMachine();
+   
+   if(showSuggestions==true){
+   drawSuggestions();
+   }
 
 
-  textAlign(CENTER);
-  text("Number of Generations: " + count, width*0.75,height*0.75);
-  text("BPM", width*0.75, height*0.9);
+  //textAlign(CENTER);
+  //text("Number of Generations: " + count, width*0.75,height*0.75);
+  //text("BPM", width*0.75, height*0.9);
     
-  for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
-    if(int(population.fittest.charAt(i))==49){
-      fill(0,255,0);
-    } else {
-      fill(209, 210, 211);
-    }
-    rect(45+i*32,height/5+5+machine_height-100,30,30,5);
+  //for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
+  //  if(int(population.fittest.charAt(i))==49){
+  //    fill(0,255,0);
+  //  } else {
+  //    fill(209, 210, 211);
+  //  }
+  //  rect(45+i*32,height/5+5+machine_height-100,30,30,5);
     
-    if(int(population.fittest.charAt(i+16))==49){
-      fill(255,0,0); // fill for wanted beat 
-    } else {
-      fill(209, 210, 211); // fill for unwanted beat
-    }
-    //rectMode(RADIUS);
-    rect(45+i*32,1.6*height/5+5+machine_height-100,30,30,5);
+  //  if(int(population.fittest.charAt(i+16))==49){
+  //    fill(255,0,0); // fill for wanted beat 
+  //  } else {
+  //    fill(209, 210, 211); // fill for unwanted beat
+  //  }
+  //  //rectMode(RADIUS);
+  //  rect(45+i*32,1.6*height/5+5+machine_height-100,30,30,5);
     
-    if(int(population.fittest.charAt(i+32))==49){
-      fill(255,0,255);
-    } else {
-      fill(209, 210, 211);
-    }
-    rect(45+i*32,2.2*height/5+5+machine_height-100,30,30,5);
-  }
+  //  if(int(population.fittest.charAt(i+32))==49){
+  //    fill(255,0,255);
+  //  } else {
+  //    fill(209, 210, 211);
+  //  }
+  //  rect(45+i*32,2.2*height/5+5+machine_height-100,30,30,5);
+  //}
   
-  stroke(200);
+  //stroke(200);
   
-  noStroke();
+  //noStroke();
   
 }
 
@@ -343,6 +367,30 @@ void drawDrumMachine (){
       sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+i*57, 50, 50, i, downbeat);
     }
   }
+  
+  //progress indicating highlight
+  fill(255,150);
+  rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
+  
+}
+
+void drawSuggestions (){
+    textFont(f,28);
+   text("Suggestions for you: ",margin_left+140,margin_top+machine_height-60);
+   
+  //instruments and beats
+  for (int i = 0; i < instruments; i++){
+    instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+(2*machine_height/3)+title_height+i*57, 50, 50);
+    for (int j=0; j < beats; j++){
+      boolean downbeat = (j%4 == 0);
+      suggestion_states[i][j] = SuggestionSquare(suggestion_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+(2*machine_height/3)+i*57, 50, 50, i, downbeat);
+    }
+  }
+  
+  if (showBackButton==true){
+  SuggestionsButton("<",margin_left-57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57, 50, 50);
+  }
+  SuggestionsButton(nextButtonLabel,margin_left+(beats+1)*57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57, 50, 50);
   
   //progress indicating highlight
   fill(255,150);
@@ -363,6 +411,32 @@ class ScreenSwitchListener implements ControlListener {
       
       
   }
+}
+
+boolean[][] stringToArray(String sequence) {
+ boolean[][] sequence_array = new boolean[instruments][beats];
+  int i = 0;
+    for (int j=0; j<instruments; j++){
+      for (int k=0; k<beats; k++){
+        if(sequence.charAt(i)=='0'){
+          sequence_array[j][k] = false;
+        } else {
+          sequence_array[j][k] = true;
+        }
+      i++;
+    }
+    }
+   return sequence_array;
+}
+
+String arrayToString(boolean[][] sequence_array){
+  String sequence = "";
+  for (int j=0; j<beats; j++){
+      for (int k=0; k<beats; k++){
+      sequence = sequence + str(sequence_array[j][k]);
+    }
+    }
+    return sequence;
 }
 
 //class PauseListener implements ControlListener {
