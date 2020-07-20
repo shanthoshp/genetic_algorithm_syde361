@@ -20,6 +20,7 @@ StringList suggestions = new StringList();
 int currentSuggestion = 0;
 String nextButtonLabel = "+";
 Boolean showBackButton = false;
+Boolean showSuggestions = false;
 
 float mutationRate = 0.001; 
 int totalPopulation = 150;
@@ -136,10 +137,10 @@ void setup() {
          ;
        
  s1 = cp5.addSlider("tempo")
-     .setPosition(680,174+machine_height)
+     .setPosition(margin_left+60+((beats-6)*57),margin_top+50)
      .setRange(50,180)
-     .setSize(100,15)
-     .setCaptionLabel("")
+     .setSize(130,30)
+     .setCaptionLabel("BPM")
      .setColorBackground(color(40))
      .setColorForeground(color(180))
      .setColorActive(color(250))
@@ -277,7 +278,7 @@ void draw() {
           beat = beat%targetMidi1.length();
           
           //s.setVisible(true);
-          //s1.setVisible(true);
+          s1.setVisible(true);
           //soundLevel.setVisible(true);
           //cp5.getController("Pause").setVisible(true);
           //cp5.getController("Play").setVisible(true);
@@ -308,10 +309,13 @@ void drawScreen(){
    textFont(f,18);
    
    String title = song_title.draw(margin_left,margin_top,900,70);
-    
-  
+   GetSuggestionsButton("Get Suggestions", margin_left+60+((beats-3)*57),margin_top+50,150,30);
+ 
    drawDrumMachine();
+   
+   if(showSuggestions==true){
    drawSuggestions();
+   }
 
 
   //textAlign(CENTER);
@@ -366,14 +370,14 @@ void drawDrumMachine (){
 
 void drawSuggestions (){
     textFont(f,28);
-   text("Suggestions for you: ",margin_left,margin_top+machine_height-40);
+   text("Suggestions for you: ",margin_left+140,margin_top+machine_height-60);
    
   //instruments and beats
   for (int i = 0; i < instruments; i++){
     instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+(2*machine_height/3)+title_height+i*57, 50, 50);
     for (int j=0; j < beats; j++){
       boolean downbeat = (j%4 == 0);
-      suggestion_states[i][j] = Square(suggestion_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+(2*machine_height/3)+i*57, 50, 50, i, downbeat);
+      suggestion_states[i][j] = SuggestionSquare(suggestion_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+(2*machine_height/3)+i*57, 50, 50, i, downbeat);
     }
   }
   

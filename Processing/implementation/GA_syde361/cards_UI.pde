@@ -194,7 +194,6 @@
         fill(white);
         rect(x, y, w, h);
         text(text, x, y, w, h);
-        println(currentSuggestion);
         if (text=="<"){
           currentSuggestion = currentSuggestion -1;
           suggestion_states = stringToArray(suggestions.get(currentSuggestion));
@@ -212,9 +211,42 @@
         } else if(text=="+"){
           String suggest = newSuggestion();
           suggestion_states = stringToArray(suggest);
+          if (currentSuggestion>1){
           showBackButton=true;
+          }
         }
-       println(currentSuggestion);
+        return true;
+      }
+    } else {
+      fill(white);
+      rect(x, y, w, h);
+      fill(black);
+      textSize(15);
+      textAlign(CENTER, CENTER);
+      text(text, x, y, w, h);
+      return false;
+    }
+
+    return false;
+  }
+  
+  boolean GetSuggestionsButton(String text, int x, int y, int w, int h) {
+    if (mouseX >= x && mouseX <= x+w && 
+      mouseY >= y && mouseY <= y+h) {
+      fill(white);
+      rect(x, y, w, h);
+      fill(black);
+      textSize(15);
+      textAlign(CENTER, CENTER);
+      text(text, x, y, w, h);
+      if (clicked && canClick) {
+        canClick = false;
+        fill(white);
+        rect(x, y, w, h);
+        text(text, x, y, w, h);
+        showSuggestions = true;
+        String suggest = newSuggestion();
+          suggestion_states = stringToArray(suggest);
         return true;
       }
     } else {
@@ -784,6 +816,41 @@
       }
       rect(x,y,w,h,3);
     }
+    return value;
+  }
+  
+  //special toggle class styled specifically for drum machine
+  public boolean SuggestionSquare(boolean value, int x, int y, int w, int h, int row, boolean downbeat) {
+    color on_color = row1_on;
+    color hover_color = row1_hover;
+    
+    //Pick colour for 'on' and 'hover' based on row 
+    switch (row) {
+      case 0:  
+        on_color = row1_on; 
+        hover_color = row1_hover; 
+        break;
+      case 1:  
+        on_color = row2_on;  
+        hover_color = row2_hover;
+        break;
+      case 2:  
+        on_color = row3_on;  
+        hover_color = row3_hover;
+        break;
+      default: on_color = color(200,200,200); break;
+    }
+    
+      if (value){
+        fill(on_color);}
+      else {
+        if (downbeat){
+          fill(beat_med);}
+        else {
+          fill(beat_dark);
+        }
+      }
+      rect(x,y,w,h,3);
     return value;
   }
 
