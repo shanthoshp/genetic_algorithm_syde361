@@ -27,6 +27,7 @@ class DNA {
         }
      }
      
+     //the closed hat section of the beat is checked for symmetry
      for (int i = 17; i < 32; i++){
        if( genes[i] != genes[i-1]){
          sym1++;
@@ -36,6 +37,7 @@ class DNA {
          score -= 8;
      }
      
+     //the open hat section of the beat is checked for low density of notes
      for (int i = 33; i < target.length(); i++){
        if(genes[i] == 49){
          density++;

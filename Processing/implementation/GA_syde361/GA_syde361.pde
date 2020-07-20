@@ -64,7 +64,7 @@ void setup() {
   size(1366, 768);
   background(black);
   
-  score.tempo(tempo);
+  
   
   targetMidi1 =   "1010000000100100"; // Kick drum
   targetMidi2 =   "1111111011111011"; // Closed hi-hat
@@ -142,7 +142,6 @@ void setup() {
      .setVisible(false);
      ;
      cp5.getController("tempo").getValueLabel().setColor(color(40));
-     //cp5.getController("tempo").getValueLabel().align(ControlP5.RIGHT, CENTER).setColor(color(40));
          
   cp5.getController("MutaGen")
      .getValueLabel()
@@ -212,6 +211,8 @@ void setup() {
       }
     }
     );
+    
+    //functionality for volume control enabled
     soundLevel.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_RELEASED || theEvent.getAction() == ControlP5.ACTION_RELEASEDOUTSIDE){
@@ -236,12 +237,6 @@ void setup() {
 void draw() {
       if(changeScreen == 0){
         beginCard("Welcome to UCompose, please select a genre of music:", 0, 0, 800, 600);
-        
-        //text(,20,70);
-        //if(Button("Hip-hop",20,100)){
-        //  currentlyOnFirst = false;
-          
-        //}
         
         if(Button("R&B",20,150)){
           //screen++;
@@ -270,6 +265,8 @@ void draw() {
           beat++;
           beat = beat%targetMidi1.length();
           
+          //Each ControlP5 element is shown on the main beat maker page
+          score.tempo(tempo);
           s.setVisible(true);
           s1.setVisible(true);
           soundLevel.setVisible(true);
@@ -277,14 +274,10 @@ void draw() {
           cp5.getController("Play").setVisible(true);
           cp5.getController("Generate").setVisible(true);
 
-          //s1.setCaptionLabel("BPM:");
-
           generations = int(s.getArrayValue()[0]);
           mutationRate = s.getArrayValue()[1];
           cp5.getController("MutaGen")
              .setCaptionLabel("Mut/Gen" + "   " + s.getArrayValue()[1] + "," + int(s.getArrayValue()[0]) )
-             //.setValue(true)
-             //.setColorCaptionLabel(color(200))
              ;
           
           if(pauseScreen == 0){
