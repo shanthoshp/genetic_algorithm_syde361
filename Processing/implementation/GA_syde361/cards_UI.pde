@@ -14,7 +14,6 @@
  -Slider
  -Toggle
     - Squares, modification of toggle the drum machine
-
  -Card
  -Movable Cards
  */
@@ -34,6 +33,7 @@
   private color row3_hover = color(237, 146, 179);
   
   //default colours
+
   private color c_very_dark = color(36, 37, 46);
   private color c_dark = color(29, 33, 44);
   private color c_mid = color(44, 58, 71);
@@ -348,7 +348,7 @@
     bufferText = txt;
   }
   
-  //generic text input class 
+//generic text input class 
 
   public class TextInput {
     String text = "";
@@ -442,7 +442,7 @@
       return text;
     }
   }
-  
+
     //kim's "improved" text input class made for title
   
   public class TextInputSpecial {
@@ -595,6 +595,7 @@
   //Toggle
   
   //generic toggle
+
   public boolean Toggle(boolean value, int x, int y, int w, int h) {
     fill(c_dark);
     stroke(c_light);
@@ -738,8 +739,6 @@
   public boolean Square(boolean value, int x, int y) {
     return Square(value, x, y, 60, 30, 0, false);
   }
-  
-  
 
   /*--- Slider ---
    v1.0

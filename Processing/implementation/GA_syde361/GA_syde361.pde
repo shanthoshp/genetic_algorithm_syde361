@@ -63,7 +63,7 @@ void setup() {
   background(black);
   
   score.tempo(tempo);
-
+  
   targetMidi1 =   "1010000000100100"; // Kick drum
   targetMidi2 =   "1111111011111011"; // Closed hi-hat
   targetMidi3 =   "0000000100000100"; // Open hi-hat
@@ -75,11 +75,12 @@ void setup() {
   population.updateGA(mutationRate);
 
   f = createFont("Roboto",48,true);
+
   ControlFont font = new ControlFont(f,14);
   textFont(f,20);
   noStroke();
   
-  // Initialize sequencer_states
+ // Initialize sequencer_states
   for (int i = 0; i < instruments; i++) {
     instrument_buttons[i]=false;
     for (int j = 0; j < beats; j++) {
@@ -115,6 +116,7 @@ void setup() {
   s = cp5.addSlider2D("MutaGen")
          //.setArrayValue(int,float)
          .setPosition(680,40+machine_height)
+
          .setSize(100,100)
          .setMinMax(1,0.05,20,0.001)
          .setValue(1,0.02)
