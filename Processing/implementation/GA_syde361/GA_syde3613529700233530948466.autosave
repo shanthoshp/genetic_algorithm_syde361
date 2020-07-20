@@ -21,7 +21,6 @@ int currentSuggestion = 0;
 String nextButtonLabel = "+";
 Boolean showBackButton = false;
 Boolean showSuggestions = false;
-String suggestionsLabel = "Show Suggestions";
 
 float mutationRate = 0.001; 
 int totalPopulation = 150;
@@ -202,7 +201,7 @@ void setup() {
              .setColorCaptionLabel(0)
              .setFont(pause_play_buttons_font)
              .setVisible(false)
-             //.addListener(playSong)
+             .addListener(playSong)
              ;
 
   resume = cp5.addButton("Generate")
@@ -229,6 +228,7 @@ void setup() {
   //           .setFont(pause_play_buttons_font)
   //           .setVisible(false)
   //           ;
+ //GetSuggestionsButton("Get Suggestions", margin_left+60+((beats-3)*57),margin_top+50,150,35);
  
   //playSuggestion.addCallback(new CallbackListener(){
   //   public void controlEvent(CallbackEvent theEvent){
@@ -245,7 +245,7 @@ void setup() {
     pause.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
-          //cp5.getController("Pause").setVisible(true);
+          cp5.getController("Pause").setVisible(true);
           pauseScreen = (int)theEvent.getController().getValue();
         }
       }
@@ -256,10 +256,9 @@ void setup() {
    play.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
-
-          //cp5.getController("Play").setVisible(true);
-          playSound(volume, arrayToString(sequencer_states));
-
+          cp5.getController("Play").setVisible(true);
+          //playSound(volume, population.fittest); 
+           playSound(volume, population.fittest);
           print(user_beat);
           print('\n');
         }
@@ -371,7 +370,7 @@ void drawScreen(){
    textFont(f,15);
    
    String title = song_title.draw(margin_left,margin_top - 75,900,70);
-   GetSuggestionsButton(suggestionsLabel, margin_left+60+((beats-3)*57),margin_top+50,150,35);
+   GetSuggestionsButton("Get Suggestions", margin_left+60+((beats-3)*57),margin_top+50,150,35);
  
    drawDrumMachine();
    
@@ -474,19 +473,23 @@ class ScreenSwitchListener implements ControlListener {
 class PlayPauseListener implements ControlListener {
   //changeScreen;
   
-  boolean playing = false;
+  boolean toPlayOrNotToPlay = false;
   public void controlEvent(ControlEvent theEvent){
+    //println(theEvent.getController().getValue());
+    System.out.println("reaching this");
     clickedButton = (int)theEvent.getController().getValue();      
     System.out.println(clickedButton);
     if(clickedButton == 1) {
-      playing = true; //remember to make this false when playing
+      toPlayOrNotToPlay = true; //remember to make this false when playing
+      System.out.println("Play");
     }
     else if(clickedButton == 0) {
-      playing = false;
+      toPlayOrNotToPlay = true;
+      System.out.println("Pause");
     }
     else
-      playing = false;
-}
+      System.out.println("no clue what triggered this");
+  }
 }
     
 
@@ -508,16 +511,11 @@ boolean[][] stringToArray(String sequence) {
 
 String arrayToString(boolean[][] sequence_array){
   String sequence = "";
-  for (int j=0; j<instruments; j++){
+  for (int j=0; j<beats; j++){
       for (int k=0; k<beats; k++){
-        if (sequence_array[j][k]==true){
-          sequence = sequence + "1";
-        } else {
-          sequence = sequence + "0";
-        }
+      sequence = sequence + str(sequence_array[j][k]);
     }
     }
-    println(sequence);
     return sequence;
 }
 
