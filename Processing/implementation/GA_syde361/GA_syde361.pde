@@ -262,12 +262,12 @@ void draw() {
           beat++;
           beat = beat%targetMidi1.length();
           
-          s.setVisible(true);
-          s1.setVisible(true);
-          soundLevel.setVisible(true);
-          cp5.getController("Pause").setVisible(true);
-          cp5.getController("Play").setVisible(true);
-          cp5.getController("Generate").setVisible(true);
+          //s.setVisible(true);
+          //s1.setVisible(true);
+          //soundLevel.setVisible(true);
+          //cp5.getController("Pause").setVisible(true);
+          //cp5.getController("Play").setVisible(true);
+          //cp5.getController("Generate").setVisible(true);
 
           //s1.setCaptionLabel("BPM:");
 
@@ -296,39 +296,40 @@ void drawScreen(){
    String title = song_title.draw(margin_left,margin_top,900,70);
    
    drawDrumMachine();
+   drawSuggestions();
 
 
-  textAlign(CENTER);
-  text("Number of Generations: " + count, width*0.75,height*0.75);
-  text("BPM", width*0.75, height*0.9);
+  //textAlign(CENTER);
+  //text("Number of Generations: " + count, width*0.75,height*0.75);
+  //text("BPM", width*0.75, height*0.9);
     
-  for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
-    if(int(population.fittest.charAt(i))==49){
-      fill(0,255,0);
-    } else {
-      fill(209, 210, 211);
-    }
-    rect(45+i*32,height/5+5+machine_height-100,30,30,5);
+  //for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
+  //  if(int(population.fittest.charAt(i))==49){
+  //    fill(0,255,0);
+  //  } else {
+  //    fill(209, 210, 211);
+  //  }
+  //  rect(45+i*32,height/5+5+machine_height-100,30,30,5);
     
-    if(int(population.fittest.charAt(i+16))==49){
-      fill(255,0,0); // fill for wanted beat 
-    } else {
-      fill(209, 210, 211); // fill for unwanted beat
-    }
-    //rectMode(RADIUS);
-    rect(45+i*32,1.6*height/5+5+machine_height-100,30,30,5);
+  //  if(int(population.fittest.charAt(i+16))==49){
+  //    fill(255,0,0); // fill for wanted beat 
+  //  } else {
+  //    fill(209, 210, 211); // fill for unwanted beat
+  //  }
+  //  //rectMode(RADIUS);
+  //  rect(45+i*32,1.6*height/5+5+machine_height-100,30,30,5);
     
-    if(int(population.fittest.charAt(i+32))==49){
-      fill(255,0,255);
-    } else {
-      fill(209, 210, 211);
-    }
-    rect(45+i*32,2.2*height/5+5+machine_height-100,30,30,5);
-  }
+  //  if(int(population.fittest.charAt(i+32))==49){
+  //    fill(255,0,255);
+  //  } else {
+  //    fill(209, 210, 211);
+  //  }
+  //  rect(45+i*32,2.2*height/5+5+machine_height-100,30,30,5);
+  //}
   
-  stroke(200);
+  //stroke(200);
   
-  noStroke();
+  //noStroke();
   
 }
 
@@ -339,6 +340,22 @@ void drawDrumMachine (){
     for (int j=0; j < beats; j++){
       boolean downbeat = (j%4 == 0);
       sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+i*57, 50, 50, i, downbeat);
+    }
+  }
+  
+  //progress indicating highlight
+  fill(255,150);
+  rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
+  
+}
+
+void drawSuggestions (){
+  //instruments and beats
+  for (int i = 0; i < instruments; i++){
+    instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+machine_height+title_height+i*57, 50, 50);
+    for (int j=0; j < beats; j++){
+      boolean downbeat = (j%4 == 0);
+      sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+machine_height+i*57, 50, 50, i, downbeat);
     }
   }
   
