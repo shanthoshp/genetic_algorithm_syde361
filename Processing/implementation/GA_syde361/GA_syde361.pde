@@ -20,7 +20,7 @@ Boolean currentlyOnFirst = true;
 Population population;
 int generations = 10;
 float startTime = millis(); 
-float tempo = 65;
+float tempo = 60;
 PFont f;
 
 //Storage of the toggle states of each button in the sequencer
