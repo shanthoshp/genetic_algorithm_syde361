@@ -29,7 +29,7 @@ Boolean currentlyOnFirst = true;
 Population population;
 int generations = 20;
 float startTime = millis(); 
-float tempo = 300;
+float tempo = 60;
 PFont f;
 
 ControlP5 cp5;
@@ -47,11 +47,15 @@ int changeScreen;
 int pauseScreen;
 double volume = 80;
 
-//Storage of the toggle states of each button in the sequencer
+//Store toggle states of each button in the sequencer (this is the user's beat)
 int instruments = 3;
 int beats = 16;
 boolean[][] sequencer_states = new boolean[instruments][beats];
 boolean[][] suggestion_states = new boolean[instruments][beats];
+
+//store the strings corresponding to sequencer states (this is the user's beat as a string for each instrument)
+String user_beat;
+
 //track if any of the instrument lines have been selected by the instrument button
 boolean[] instrument_buttons = new boolean[instruments];
 
@@ -70,7 +74,7 @@ void setup() {
   background(black);
   suggestions.append("000000000000000000000000000000000000000000000000");
   
-  score.tempo(tempo);
+  
   
   targetMidi1 =   "1010000000100100"; // Kick drum
   targetMidi2 =   "1111111011111011"; // Closed hi-hat
@@ -91,6 +95,7 @@ void setup() {
  // Initialize sequencer_states
   for (int i = 0; i < instruments; i++) {
     instrument_buttons[i]=false;
+    user_beat = "000000000000000000000000000000000000000000000000";
     for (int j = 0; j < beats; j++) {
       sequencer_states[i][j] = false;
     }
@@ -147,7 +152,6 @@ void setup() {
      .setVisible(false);
      ;
      cp5.getController("tempo").getValueLabel().setColor(color(40));
-     //cp5.getController("tempo").getValueLabel().align(ControlP5.RIGHT, CENTER).setColor(color(40));
          
   cp5.getController("MutaGen")
      .getValueLabel()
@@ -212,11 +216,15 @@ void setup() {
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
           cp5.getController("Play").setVisible(false);
-          population.playSound(volume);
+          playSound(volume, population.fittest);
+          print(user_beat);
+          print('\n');
         }
       }
     }
     );
+    
+    //functionality for volume control enabled
     soundLevel.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_RELEASED || theEvent.getAction() == ControlP5.ACTION_RELEASEDOUTSIDE){
@@ -249,12 +257,6 @@ void draw() {
       if(changeScreen == 0){
         beginCard("Welcome to UCompose, please select a genre of music:", 0, 0, 800, 600);
         
-        //text(,20,70);
-        //if(Button("Hip-hop",20,100)){
-        //  currentlyOnFirst = false;
-          
-        //}
-        
         if(Button("R&B",20,150)){
           //screen++;
         }
@@ -267,6 +269,10 @@ void draw() {
        else if(changeScreen == 1){
         drawScreen();
         target = targetMidi1 +targetMidi2 + targetMidi3;
+        user_beat = boolsToString(sequencer_states, instruments, beats);
+        //print(user_beat);
+        //print('\n');
+
         //text("Here",20,100);
         redraw();
         //for(int i = 0; i <generations; i++){
@@ -277,21 +283,21 @@ void draw() {
           beat++;
           beat = beat%targetMidi1.length();
           
+
+          //Each ControlP5 element is shown on the main beat maker page
+          score.tempo(tempo*4);
           //s.setVisible(true);
+
           s1.setVisible(true);
           //soundLevel.setVisible(true);
           //cp5.getController("Pause").setVisible(true);
           //cp5.getController("Play").setVisible(true);
           //cp5.getController("Generate").setVisible(true);
 
-          //s1.setCaptionLabel("BPM:");
-
           generations = int(s.getArrayValue()[0]);
           mutationRate = s.getArrayValue()[1];
           cp5.getController("MutaGen")
              .setCaptionLabel("Mut/Gen" + "   " + s.getArrayValue()[1] + "," + int(s.getArrayValue()[0]) )
-             //.setValue(true)
-             //.setColorCaptionLabel(color(200))
              ;
           
           if(pauseScreen == 0){
@@ -441,3 +447,50 @@ String arrayToString(boolean[][] sequence_array){
     
 //  }
 //}
+
+  //TO DO: Currently the beats for each case was randomly chosen. We need to discuss what beats are appropriate for each case
+ void playSound(double volume, String string) {
+    
+    score.empty();
+    
+    int[] midi1 = new int[16];
+    int[] midi2 = new int[16];
+    int[] midi3 = new int[16];
+    
+    for (int i = 0; i < 16; i++){ 
+      midi1[i] = int(string.charAt(i));
+      midi2[i] = int(string.charAt(i+16));
+      midi3[i] = int(string.charAt(i+32));
+    }
+    
+    for (int i = 0; i < 16; i++){    
+      if (midi1[i]==49) {
+        score.addNote(i/1, 9, 0, 40, volume, 0.25, 0.8, 64); //kick
+      }
+      if (midi2[i]==49) {
+        score.addNote(i/1, 9, 0, 44, volume, 0.25, 0.8, 100); //closed hat
+      }
+      
+      if (midi3[i]==49) {
+        score.addNote(i/1, 9, 0, 60, volume, 0.25, 0.8, 20); //open hat
+      }
+    }
+ 
+   score.play();
+ }
+
+String boolsToString (boolean[][] values, int rows, int cols){
+  String output = "";
+  
+  for (int i = 0; i < rows; i++){
+    for (int j = 0; j < cols; j++){
+      if (values[i][j] == false){
+        output = output + "0";
+      }
+      else {
+        output = output + "1";
+      }
+    }
+  }
+  return output;
+}
