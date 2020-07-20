@@ -262,6 +262,40 @@
     return false;
   }
   
+  boolean PlaySuggestionsButton(String text, int x, int y, int w, int h) {
+    if (mouseX >= x && mouseX <= x+w && 
+      mouseY >= y && mouseY <= y+h) {
+      fill(white);
+      rect(x, y, w, h);
+      fill(black);
+      textSize(15);
+      textAlign(CENTER, CENTER);
+      text(text, x, y, w, h);
+      if (clicked && canClick) {
+        canClick = false;
+        fill(white);
+        rect(x, y, w, h);
+        text(text, x, y, w, h);
+        if (text=="Play"){
+          playSound(volume, suggestions.get(currentSuggestion));
+        } else {
+          playSound(volume, population.fittest);
+        } 
+        return true;
+      }
+    } else {
+      fill(white);
+      rect(x, y, w, h);
+      fill(black);
+      textSize(15);
+      textAlign(CENTER, CENTER);
+      text(text, x, y, w, h);
+      return false;
+    }
+
+    return false;
+  }
+  
   //Basic Image Button
   boolean ImageButton(PImage img, int x, int y, int w, int h) {
     if (mouseX >= x && mouseX <= x+w && 

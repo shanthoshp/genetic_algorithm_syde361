@@ -377,6 +377,7 @@ void drawDrumMachine (){
 void drawSuggestions (){
     textFont(f,28);
    text("Suggestions for you: ",margin_left+140,margin_top+machine_height-60);
+   PlaySuggestionsButton("Play", margin_left+300,margin_top+machine_height-70,50,30);
    
   //instruments and beats
   for (int i = 0; i < instruments; i++){
