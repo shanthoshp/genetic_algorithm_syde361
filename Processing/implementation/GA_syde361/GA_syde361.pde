@@ -23,7 +23,7 @@ Boolean currentlyOnFirst = true;
 Population population;
 int generations = 20;
 float startTime = millis(); 
-float tempo = 300;
+float tempo = 60;
 PFont f;
 
 ControlP5 cp5;
@@ -206,7 +206,9 @@ void setup() {
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
           cp5.getController("Play").setVisible(false);
-          population.playSound(volume);
+          playSound(volume, population.fittest);
+          print(user_beat);
+          print('\n');
         }
       }
     }
@@ -251,8 +253,8 @@ void draw() {
         drawScreen();
         target = targetMidi1 +targetMidi2 + targetMidi3;
         user_beat = boolsToString(sequencer_states, instruments, beats);
-        print(user_beat);
-        print('\n');
+        //print(user_beat);
+        //print('\n');
 
         //text("Here",20,100);
         redraw();
@@ -265,7 +267,7 @@ void draw() {
           beat = beat%targetMidi1.length();
           
           //Each ControlP5 element is shown on the main beat maker page
-          score.tempo(tempo);
+          score.tempo(tempo*4);
           s.setVisible(true);
           s1.setVisible(true);
           soundLevel.setVisible(true);
@@ -372,8 +374,39 @@ class ScreenSwitchListener implements ControlListener {
 //  }
 //}
 
+  //TO DO: Currently the beats for each case was randomly chosen. We need to discuss what beats are appropriate for each case
+ void playSound(double volume, String string) {
+    
+    score.empty();
+    
+    int[] midi1 = new int[16];
+    int[] midi2 = new int[16];
+    int[] midi3 = new int[16];
+    
+    for (int i = 0; i < 16; i++){ 
+      midi1[i] = int(string.charAt(i));
+      midi2[i] = int(string.charAt(i+16));
+      midi3[i] = int(string.charAt(i+32));
+    }
+    
+    for (int i = 0; i < 16; i++){    
+      if (midi1[i]==49) {
+        score.addNote(i/1, 9, 0, 40, volume, 0.25, 0.8, 64); //kick
+      }
+      if (midi2[i]==49) {
+        score.addNote(i/1, 9, 0, 44, volume, 0.25, 0.8, 100); //closed hat
+      }
+      
+      if (midi3[i]==49) {
+        score.addNote(i/1, 9, 0, 60, volume, 0.25, 0.8, 20); //open hat
+      }
+    }
+ 
+   score.play();
+ }
+
 String boolsToString (boolean[][] values, int rows, int cols){
-  String output = "000000000000000000000000000000000000000000000000";
+  String output = "";
   
   for (int i = 0; i < rows; i++){
     for (int j = 0; j < cols; j++){
