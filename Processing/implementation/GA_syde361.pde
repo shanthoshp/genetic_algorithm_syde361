@@ -1,6 +1,8 @@
 import themidibus.*; //Import the library
 import controlP5.*;
 MidiBus myBus; // The MidiBus
+import arb.soundcipher.*;
+SCScore score = new SCScore();
 
 int channel = 0; 
 String targetMidi1;
@@ -21,7 +23,7 @@ Boolean currentlyOnFirst = true;
 Population population;
 int generations = 20;
 float startTime = millis(); 
-float tempo = 20;
+float tempo = 300;
 PFont f;
 
 ControlP5 cp5;
@@ -31,17 +33,23 @@ CallbackListener cb;
 //ControlFont font = new ControlFont(f,14);
 Slider2D s;
 Button pause;
+Button play;
+Button resume;
 Knob soundLevel;
 int changeScreen;
 int pauseScreen;
+double volume = 80;
 
 void setup() {
   size(800, 300);
   
+  score.tempo(tempo);
+
+  
   background(c_very_dark);
-  targetMidi1 =   "0000000000000000"; // These need to be 16 long to work with the other parts
-  targetMidi2 =  "1000101000001000"; // of the code. You can change their size, but would have
-  targetMidi3 =   "0001111111100010"; // adjsut some other parameters
+  targetMidi1 =   "1010000110100000"; // These need to be 16 long to work with the other parts
+  targetMidi2 =   "1010101011110100"; // of the code. You can change their size, but would have
+  targetMidi3 =   "0000100101101000"; // adjsut some other parameters
   target = targetMidi1 + targetMidi2 + targetMidi3;
   MidiBus.list(); 
   myBus = new MidiBus(this, -1, 1);
@@ -109,12 +117,29 @@ void setup() {
              .setSize(100,30)
              .setColorBackground(color(51, 64, 80))
              .setFont(font)
-             //.addListener(pauseListener)
              .setVisible(false)
              ;
       
 
-    
+  play = cp5.addButton("Play")
+             .setValue(1)
+             .setPosition(150,200)
+             .setSize(100,30)
+             .setColorBackground(color(51, 64, 80))
+             .setFont(font)
+             .setVisible(false)
+             ;
+     
+     
+  resume = cp5.addButton("Generate")
+             .setValue(0)
+             .setPosition(280,200)
+             .setSize(100,30)
+             .setColorBackground(color(51, 64, 80))
+             .setFont(font)
+             .setVisible(false)
+             ;
+
     pause.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
@@ -124,6 +149,37 @@ void setup() {
       }
     }
   );
+  
+  
+   play.addCallback(new CallbackListener(){
+      public void controlEvent(CallbackEvent theEvent){
+        if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
+          cp5.getController("Play").setVisible(false);
+          pauseScreen = (int)theEvent.getController().getValue();
+          population.playSound(volume);
+        }
+      }
+    }
+    );
+    soundLevel.addCallback(new CallbackListener(){
+      public void controlEvent(CallbackEvent theEvent){
+        if(theEvent.getAction() == ControlP5.ACTION_RELEASED || theEvent.getAction() == ControlP5.ACTION_RELEASEDOUTSIDE){
+          volume = cp5.getController("volume").getValue()*16;
+        }
+      }
+    }
+    );
+    
+    //TO DO: Generate button is not wired up yet. Need to define button use case
+    resume.addCallback(new CallbackListener(){
+      public void controlEvent(CallbackEvent theEvent){
+        if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
+          pauseScreen = (int)theEvent.getController().getValue();
+          //draw();
+        }
+      }
+    }
+    );
 }
 
 void draw() {
@@ -150,6 +206,9 @@ void draw() {
         target = targetMidi1 +targetMidi2 + targetMidi3;
         //text("Here",20,100);
         redraw();
+        //for(int i = 0; i <generations; i++){
+        //      population.updateGA(mutationRate);
+        //    }
         if(millis()-startTime > 60/tempo/4*1000){
           startTime = millis();
           beat++;
@@ -158,6 +217,9 @@ void draw() {
           s.setVisible(true);
           soundLevel.setVisible(true);
           cp5.getController("Pause").setVisible(true);
+          cp5.getController("Play").setVisible(true);
+          cp5.getController("Generate").setVisible(true);
+
           generations = int(s.getArrayValue()[0]);
           mutationRate = s.getArrayValue()[1];
           cp5.getController("MutaGen")
@@ -179,7 +241,7 @@ void draw() {
 void drawScreen(){
    background(c_mid);
    textFont(f,18);
-  
+   
   fill(200,200,255);
    //text("MIDI 1", 550, height/5+9.5);
    
