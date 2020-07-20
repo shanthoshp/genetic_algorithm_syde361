@@ -8,13 +8,32 @@
  Controllers:
  -Button
  -ImageButton Basic
+     - imagebutton toggle, which is the appearance of an image button but the functionality of a toggle
+
  -Tooltip
  -Slider
  -Toggle
+    - Squares, modification of toggle the drum machine
  -Card
  -Movable Cards
  */
   //Colors
+  //our colours
+  private color black = color (0,0,0);
+  private color white = color (255);
+  private color beat_dark = color(130, 130, 130);
+  private color beat_med = color(189, 189, 189);
+  
+  private color row1_on = color(92, 204, 208);
+  private color row2_on = color(250, 194, 69);
+  private color row3_on = color(225, 91, 139);
+  //Backup in case I can't get hover states to work like I want
+  private color row1_hover = color(140, 224, 227);
+  private color row2_hover = color(255, 211, 111);
+  private color row3_hover = color(237, 146, 179);
+  
+  //default colours
+
   private color c_very_dark = color(36, 37, 46);
   private color c_dark = color(29, 33, 44);
   private color c_mid = color(44, 58, 71);
@@ -33,6 +52,7 @@
 
   //For text Input/Edit
   String bufferText = null;
+  String old_text = "";
   boolean doneText = false;
 
   //Default sizes
@@ -182,6 +202,24 @@
 
     return false;
   }
+  
+  //Image Button Toggle - image that is actually a toggle for some boolean
+  boolean ImageButtonToggle(boolean value, PImage img, PImage hover, int x, int y, int w, int h) {
+    rect(x, y, w, h);
+    image(img, x, y, w, h);
+    
+    if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
+      rect(x, y, w, h);
+      image(hover, x, y, w, h);
+      
+      if (clicked && canClick) {
+        canClick=false;
+        value=!value;  
+        return value;
+      }
+    }
+    return value;
+  }
 
   //Basic ImageButton with padding
   boolean ImageButton(PImage img, int x, int y, int w, int h, int padding) {
@@ -267,6 +305,7 @@
     return false;
   }
 
+//For text inputs
 
   void mousePressed() {
     clicked = true;
@@ -279,7 +318,10 @@
 
   void keyPressed() {
     if (keyCode == BACKSPACE) {
-      if (bufferText.length() > 0) {
+      if (old_text.length()>0){
+        bufferText="";
+        old_text="";}
+      else if (bufferText.length() > 0) {
         bufferText = bufferText.substring(0, bufferText.length()-1);
       }
     } else if (keyCode == DELETE) {
@@ -306,6 +348,8 @@
     bufferText = txt;
   }
   
+//generic text input class 
+
   public class TextInput {
     String text = "";
     boolean active = false;
@@ -399,6 +443,110 @@
     }
   }
 
+    //kim's "improved" text input class made for title
+  
+  public class TextInputSpecial {
+    String text = "";
+    boolean active = false;
+    String hint = "";
+    String label = "";
+
+    public TextInputSpecial() {
+    }
+
+    public TextInputSpecial(String t) {
+      this.hint = t;
+    }
+
+    public TextInputSpecial(String t, String l) {
+      this.hint = t;
+      this.label = l;
+    }
+
+    //Text Input
+    public String draw(int x, int y, int w, int h) {
+      fill(black);
+      textSize(50);
+      textAlign(LEFT, BOTTOM);
+      
+      fill(white);
+      if(old_text!=""){
+        text(old_text, x, y-21, w, 20);
+      }
+      else{
+        text(label, x, y-21, w, 20);
+      }
+      
+      if (active) {
+        //Edit Text
+        //if no existing title, just show hint
+        text(old_text!=""?old_text:hint,x,y-21,w, 20);
+        //cursor at left when empty
+        rect(x,y+5,5,h-5);
+        
+        //highlight width of whatever is showing up in the text        
+        fill(145, 193, 231);
+        if(textWidth(bufferText)>0){
+           rect(x,y,textWidth(bufferText), h);
+        }else{
+           rect(x,y,old_text!=""?textWidth(old_text):textWidth(hint), h);
+        }
+        text = bufferText;
+        fill(white);
+        text(text, x, y, w, h);
+
+        if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
+          //Inside
+        } 
+        else { //clicked outside of text area, therefore done editing
+          if (clicked) {
+            doneText = true;
+            canClick = true;
+            active=false;
+          }
+        }
+
+        if (doneText) {
+          //replace if something new has been written, otherwise leave as is
+          print ("here is");
+          print(bufferText);
+          
+          old_text = text;
+          text = bufferText;
+
+          active = false;
+          doneText = false;
+        }
+      } else if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h) {
+        text(text, x, y, w, h);
+        if (clicked && canClick) {
+          fill(255);
+          text(text, x, y, w, h);
+          //start recording new text
+          int old_length = (old_text.length()>0 && old_text!=hint)? old_text.length(): 0;
+          print(old_length);
+          EditText(text.substring(old_length,text.length()));
+          
+          canClick = false;
+          active = true;
+        }
+      } else {
+        text(text, x, y, w, h);
+        active = false;
+      }
+      if (text.length() == 0) {
+        fill(255);
+        text(old_text!=""?old_text:hint, x, y, w, h);
+      }
+      
+    return text;
+    }
+
+    public String getText() {
+      return text;
+    }
+  }
+
 
   //c_mid
   public void beginCard(String card_title, int x, int y, int w, int h) {
@@ -445,6 +593,9 @@
   }
 
   //Toggle
+  
+  //generic toggle
+
   public boolean Toggle(boolean value, int x, int y, int w, int h) {
     fill(c_dark);
     stroke(c_light);
@@ -525,6 +676,68 @@
     text(text, x, y, w, h);
     int pos_x = (int)textWidth(text);
     return Toggle(value, x+10+pos_x, y, 60, 30);
+  }
+  
+  //special toggle class styled specifically for drum machine
+  public boolean Square(boolean value, int x, int y, int w, int h, int row, boolean downbeat) {
+    color on_color = row1_on;
+    color hover_color = row1_hover;
+    
+    //Pick colour for 'on' and 'hover' based on row 
+    switch (row) {
+      case 0:  
+        on_color = row1_on; 
+        hover_color = row1_hover; 
+        break;
+      case 1:  
+        on_color = row2_on;  
+        hover_color = row2_hover;
+        break;
+      case 2:  
+        on_color = row3_on;  
+        hover_color = row3_hover;
+        break;
+      default: on_color = color(200,200,200); break;
+    }
+    
+    //Hover
+    if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h)
+    {
+      if (clicked && canClick) {
+        canClick = false;
+        value = !value;
+        return value;
+      }
+      
+      //if (value){
+      //  fill(beat_dark);}
+      //else {
+      //  fill(on_color);
+      //}
+      
+      fill(hover_color);
+    
+      rect(x,y,w,h, 3);
+    } 
+
+    //Normal
+    else {
+      if (value){
+        fill(on_color);}
+      else {
+        if (downbeat){
+          fill(beat_med);}
+        else {
+          fill(beat_dark);
+        }
+      }
+      rect(x,y,w,h,3);
+    }
+    return value;
+  }
+
+  public boolean Square(boolean value, int x, int y) {
+    return Square(value, x, y, 60, 30, 0, false);
   }
 
   /*--- Slider ---

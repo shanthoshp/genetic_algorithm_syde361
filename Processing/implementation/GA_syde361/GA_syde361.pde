@@ -41,13 +41,29 @@ int changeScreen;
 int pauseScreen;
 double volume = 80;
 
+//Storage of the toggle states of each button in the sequencer
+int instruments = 3;
+int beats = 16;
+boolean[][] sequencer_states = new boolean[instruments][beats];
+//track if any of the instrument lines have been selected by the instrument button
+boolean[] instrument_buttons = new boolean[instruments];
+
+
+//UI variables
+int margin_left = 205;
+int margin_top = 120;
+int title_height = 100;
+int machine_height = 375; //currently this is just a buffer to keep stuff from overlapping
+TextInputSpecial song_title= new TextInputSpecial("my_beat");
+PImage[] instrument_icons = new PImage[instruments];
+PImage[] instrument_hovers = new PImage[instruments];
+
 void setup() {
-  size(800, 300);
+  size(1366, 768);
+  background(black);
   
   score.tempo(tempo);
-
   
-  background(c_very_dark);
   targetMidi1 =   "1010000000100100"; // Kick drum
   targetMidi2 =   "1111111011111011"; // Closed hi-hat
   targetMidi3 =   "0000000100000100"; // Open hi-hat
@@ -58,13 +74,30 @@ void setup() {
   population = new Population(target,mutationRate,totalPopulation);
   population.updateGA(mutationRate);
 
-  f = createFont("Courier",48,true);
+  f = createFont("Roboto",48,true);
+
   ControlFont font = new ControlFont(f,14);
   textFont(f,20);
   noStroke();
   
-    cp5 = new ControlP5(this);
-    screenListener = new ScreenSwitchListener();
+ // Initialize sequencer_states
+  for (int i = 0; i < instruments; i++) {
+    instrument_buttons[i]=false;
+    for (int j = 0; j < beats; j++) {
+      sequencer_states[i][j] = false;
+    }
+  }
+  
+  //Load icons for sequencer
+  instrument_icons[0] = loadImage("assets/kick.png");
+  instrument_icons[1] = loadImage("assets/snare.png");
+  instrument_icons[2] = loadImage("assets/clap.png");
+  instrument_hovers[0] = loadImage("assets/kick-hover.png");
+  instrument_hovers[1] = loadImage("assets/snare-hover.png");
+  instrument_hovers[2] = loadImage("assets/clap-hover.png");
+  
+  cp5 = new ControlP5(this);
+  screenListener = new ScreenSwitchListener();
     
   cp5.addButton("Hip-hop")
      .setValue(1)
@@ -82,7 +115,8 @@ void setup() {
   
   s = cp5.addSlider2D("MutaGen")
          //.setArrayValue(int,float)
-         .setPosition(680,40)
+         .setPosition(680,40+machine_height)
+
          .setSize(100,100)
          .setMinMax(1,0.05,20,0.001)
          .setValue(1,0.02)
@@ -95,7 +129,7 @@ void setup() {
          ;
        
  s1 = cp5.addSlider("tempo")
-     .setPosition(680,174)
+     .setPosition(680,174+machine_height)
      .setRange(50,180)
      .setSize(100,15)
      .setCaptionLabel("")
@@ -115,7 +149,7 @@ void setup() {
   soundLevel = cp5.addKnob("volume")
                   .setRange(0,10)
                   .setValue(5)
-                  .setPosition(705,215)
+                  .setPosition(705,215+machine_height)
                   .setRadius(25)
                   .setDragDirection(Knob.HORIZONTAL)
                   .showTickMarks()
@@ -128,7 +162,7 @@ void setup() {
   //pauseListener = new PauseListener();
   pause = cp5.addButton("Pause")
              .setValue(1)
-             .setPosition(20,200)
+             .setPosition(20,200+machine_height+100)
              .setSize(100,30)
              .setColorBackground(color(51, 64, 80))
              .setFont(font)
@@ -138,7 +172,7 @@ void setup() {
 
   play = cp5.addButton("Play")
              .setValue(1)
-             .setPosition(150,200)
+             .setPosition(150,200+machine_height+100)
              .setSize(100,30)
              .setColorBackground(color(51, 64, 80))
              .setFont(font)
@@ -148,7 +182,7 @@ void setup() {
      
   resume = cp5.addButton("Generate")
              .setValue(0)
-             .setPosition(280,200)
+             .setPosition(280,200+machine_height+100)
              .setSize(100,30)
              .setColorBackground(color(51, 64, 80))
              .setFont(font)
@@ -256,19 +290,17 @@ void draw() {
   }
 
 void drawScreen(){
-   background(c_mid);
-   textFont(f,12);
-   fill(255,255,255);
-  //fill(200,200,255);   // light blue text
-   //text("MIDI 1", 550, height/5+9.5);
+   background(black);
+   textFont(f,18);
    
-  //rect(10+beat*28.5,height/5+50,24,5); // these are the dashes that keep time
-  //rect(10+beat*28.5,2.5*height/5+50,24,5);
-  //rect(10+beat*28.5,4*height/5+50,24,5);
-  
+   String title = song_title.draw(margin_left,margin_top,900,70);
+   
+   drawDrumMachine();
+
+
   textAlign(CENTER);
-  text("Number of Generations: " + count, width/2,60);
-  text("BPM", 690, 199);
+  text("Number of Generations: " + count, width*0.75,height*0.75);
+  text("BPM", width*0.75, height*0.9);
     
   for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
     if(int(population.fittest.charAt(i))==49){
@@ -276,7 +308,7 @@ void drawScreen(){
     } else {
       fill(209, 210, 211);
     }
-    rect(45+i*32,height/5+5,30,30,5);
+    rect(45+i*32,height/5+5+machine_height-100,30,30,5);
     
     if(int(population.fittest.charAt(i+16))==49){
       fill(255,0,0); // fill for wanted beat 
@@ -284,19 +316,35 @@ void drawScreen(){
       fill(209, 210, 211); // fill for unwanted beat
     }
     //rectMode(RADIUS);
-    rect(45+i*32,1.7*height/5+5,30,30,5);
+    rect(45+i*32,1.6*height/5+5+machine_height-100,30,30,5);
     
     if(int(population.fittest.charAt(i+32))==49){
       fill(255,0,255);
     } else {
       fill(209, 210, 211);
     }
-    rect(45+i*32,2.4*height/5+5,30,30,5);
+    rect(45+i*32,2.2*height/5+5+machine_height-100,30,30,5);
   }
   
   stroke(200);
   
   noStroke();
+  
+}
+
+void drawDrumMachine (){
+  //instruments and beats
+  for (int i = 0; i < instruments; i++){
+    instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+title_height+i*57, 50, 50);
+    for (int j=0; j < beats; j++){
+      boolean downbeat = (j%4 == 0);
+      sequencer_states[i][j] = Square(sequencer_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+i*57, 50, 50, i, downbeat);
+    }
+  }
+  
+  //progress indicating highlight
+  fill(255,150);
+  rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
   
 }
 
