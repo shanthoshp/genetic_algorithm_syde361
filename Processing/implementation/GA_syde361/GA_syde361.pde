@@ -46,7 +46,7 @@ int instruments = 3;
 int beats = 16;
 boolean[][] sequencer_states = new boolean[instruments][beats];
 //store the strings corresponding to sequencer states (this is the user's beat as a string for each instrument)
-String[] user_beat = new String[instruments];
+String user_beat;
 //track if any of the instrument lines have been selected by the instrument button
 boolean[] instrument_buttons = new boolean[instruments];
 
@@ -85,7 +85,7 @@ void setup() {
  // Initialize sequencer_states
   for (int i = 0; i < instruments; i++) {
     instrument_buttons[i]=false;
-    user_beat[i] = "0000000000000000";
+    user_beat = "000000000000000000000000000000000000000000000000";
     for (int j = 0; j < beats; j++) {
       sequencer_states[i][j] = false;
     }
@@ -250,10 +250,9 @@ void draw() {
        else if(changeScreen == 1){
         drawScreen();
         target = targetMidi1 +targetMidi2 + targetMidi3;
-        user_beat = boolsToStrings(sequencer_states, instruments, beats);
-        print(user_beat[0]); print('\n');
-        print(user_beat[1]); print('\n');
-        print(user_beat[2]); print('\n');
+        user_beat = boolsToString(sequencer_states, instruments, beats);
+        print(user_beat);
+        print('\n');
 
         //text("Here",20,100);
         redraw();
@@ -373,19 +372,16 @@ class ScreenSwitchListener implements ControlListener {
 //  }
 //}
 
-String[] boolsToStrings (boolean[][] values, int rows, int cols){
-  String[] output = new String[rows];
-  for (int k = 0; k < rows; k++){
-    output[k]=""; 
-  }
+String boolsToString (boolean[][] values, int rows, int cols){
+  String output = "000000000000000000000000000000000000000000000000";
   
   for (int i = 0; i < rows; i++){
     for (int j = 0; j < cols; j++){
       if (values[i][j] == false){
-        output[i] = output[i] + "0";
+        output = output + "0";
       }
       else {
-        output[i] = output[i] + "1";
+        output = output + "1";
       }
     }
   }
