@@ -21,6 +21,7 @@ int currentSuggestion = 0;
 String nextButtonLabel = "+";
 Boolean showBackButton = false;
 Boolean showSuggestions = false;
+String suggestionsLabel = "Show Suggestions";
 
 float mutationRate = 0.001; 
 int totalPopulation = 150;
@@ -216,7 +217,7 @@ void setup() {
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
           cp5.getController("Play").setVisible(false);
-          playSound(volume, population.fittest);
+          playSound(volume, arrayToString(sequencer_states));
           print(user_beat);
           print('\n');
         }
@@ -315,7 +316,7 @@ void drawScreen(){
    textFont(f,18);
    
    String title = song_title.draw(margin_left,margin_top,900,70);
-   GetSuggestionsButton("Get Suggestions", margin_left+60+((beats-3)*57),margin_top+50,150,30);
+   GetSuggestionsButton(suggestionsLabel, margin_left+60+((beats-3)*57),margin_top+50,150,30);
  
    drawDrumMachine();
    
@@ -432,11 +433,16 @@ boolean[][] stringToArray(String sequence) {
 
 String arrayToString(boolean[][] sequence_array){
   String sequence = "";
-  for (int j=0; j<beats; j++){
+  for (int j=0; j<instruments; j++){
       for (int k=0; k<beats; k++){
-      sequence = sequence + str(sequence_array[j][k]);
+        if (sequence_array[j][k]==true){
+          sequence = sequence + "1";
+        } else {
+          sequence = sequence + "0";
+        }
     }
     }
+    println(sequence);
     return sequence;
 }
 

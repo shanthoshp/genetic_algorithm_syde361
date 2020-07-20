@@ -244,9 +244,17 @@
         fill(white);
         rect(x, y, w, h);
         text(text, x, y, w, h);
-        showSuggestions = true;
+        if(text=="Show Suggestions"){
+          showSuggestions = true;
+          suggestionsLabel = "Hide Suggestions";
+          if (currentSuggestion == 0){
         String suggest = newSuggestion();
           suggestion_states = stringToArray(suggest);
+          }
+        } else {
+          showSuggestions = false;
+          suggestionsLabel = "Show Suggestions";
+        }
         return true;
       }
     } else {
