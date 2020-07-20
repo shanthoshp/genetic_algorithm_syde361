@@ -214,34 +214,6 @@ void setup() {
              .setVisible(false)
              ;
 
-  //playSuggestion = cp5.addButton("PlaySuggestion")
-  //           .setPosition(margin_left+300,margin_top+machine_height-70)
-  //           .setSize(100,35)
-  //           .setColorBackground(color(255,255,255))
-  //           .setFont(pause_play_buttons_font)
-  //           .setVisible(false)
-  //           ;
-             
-  //getSuggestion = cp5.addButton("Get Suggestions")
-  //           .setPosition(margin_left+60+((beats-3)*57),margin_top+50)
-  //           .setSize(150,35)
-  //           .setColorBackground(0)
-  //           .setFont(pause_play_buttons_font)
-  //           .setVisible(false)
-  //           ;
- 
-  //playSuggestion.addCallback(new CallbackListener(){
-  //   public void controlEvent(CallbackEvent theEvent){
-  //         //playSound(volume, suggestions.get(currentSuggestion));
-  //   }
-  //});
-  
-  //getSuggestion.addCallback(new CallbackListener(){
-  //   public void controlEvent(CallbackEvent theEvent){
-       
-  //   }
-  //});
-
     pause.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
@@ -298,12 +270,6 @@ String newSuggestion(){
 
 void draw() {
       if(changeScreen == 0){
-        //rect(width/4,height/4,width/2,height/2);
-        //        fill(0);
-        //String strTitle = "UCompose";
-        //text(strTitle, width/4, height/4, 
-        //width/2,  height/2 );
-        //textSize(30);
         beginCard("UCompose", 0, 150, 1350, 1000);
         rect(width/4,height/4,width/2,height/2);
         fill(255);
@@ -312,28 +278,14 @@ void draw() {
         text(str, 
         width/4, height/4, 
         width/2,  height/2 );
-        
-        //if(Button("R&B",20,150)){
-        //  //screen++;
-        //}
-        
-        //if(Button("Rock",20,200)){
-        //  //screen++;
-        //}
-      //endCard();
       }
        else if(changeScreen == 1){
         drawScreen();
         target = targetMidi1 +targetMidi2 + targetMidi3;
         user_beat = boolsToString(sequencer_states, instruments, beats);
-        //print(user_beat);
-        //print('\n');
 
-        //text("Here",20,100);
         redraw();
-        //for(int i = 0; i <generations; i++){
-        //      population.updateGA(mutationRate);
-        //    }
+
         if(millis()-startTime > 60/tempo/4*1000){
           startTime = millis();
           beat++;
@@ -342,13 +294,8 @@ void draw() {
 
           //Each ControlP5 element is shown on the main beat maker page
           score.tempo(tempo*4);
-          //s.setVisible(true);
 
           s1.setVisible(true);
-          //soundLevel.setVisible(true);
-          //cp5.getController("Pause").setVisible(true);
-          //cp5.getController("Play").setVisible(true);
-          //cp5.getController("Generate").setVisible(true);
 
           generations = int(s.getArrayValue()[0]);
           mutationRate = s.getArrayValue()[1];
@@ -383,34 +330,6 @@ void drawScreen(){
   //textAlign(CENTER);
   //text("Number of Generations: " + count, width*0.75,height*0.75);
   //text("BPM", width*0.75, height*0.9);
-    
-  //for (int i = 0; i < 16; i++){ // set the number of times to update the GA between beats
-  //  if(int(population.fittest.charAt(i))==49){
-  //    fill(0,255,0);
-  //  } else {
-  //    fill(209, 210, 211);
-  //  }
-  //  rect(45+i*32,height/5+5+machine_height-100,30,30,5);
-    
-  //  if(int(population.fittest.charAt(i+16))==49){
-  //    fill(255,0,0); // fill for wanted beat 
-  //  } else {
-  //    fill(209, 210, 211); // fill for unwanted beat
-  //  }
-  //  //rectMode(RADIUS);
-  //  rect(45+i*32,1.6*height/5+5+machine_height-100,30,30,5);
-    
-  //  if(int(population.fittest.charAt(i+32))==49){
-  //    fill(255,0,255);
-  //  } else {
-  //    fill(209, 210, 211);
-  //  }
-  //  rect(45+i*32,2.2*height/5+5+machine_height-100,30,30,5);
-  //}
-  
-  //stroke(200);
-  
-  //noStroke();
   
 }
 
@@ -431,7 +350,7 @@ void drawDrumMachine (){
 }
 
 void drawSuggestions (){
-    textFont(f,20);
+   textFont(f,20);
    text("Suggestions for you: ",margin_left+100,margin_top+machine_height-60);
    PlaySuggestionsButton("PLAY", margin_left,margin_top+machine_height-30,100,35);
    
@@ -530,7 +449,7 @@ String arrayToString(boolean[][] sequence_array){
 //  }
 //}
 
-  //TO DO: Currently the beats for each case was randomly chosen. We need to discuss what beats are appropriate for each case
+ //Note that currently the "snare" sounds like a closed hat, and the "clap" sounds like 
  void playSound(double volume, String string) {
     
     score.empty();

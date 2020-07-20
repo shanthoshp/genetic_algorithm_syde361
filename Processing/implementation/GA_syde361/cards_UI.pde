@@ -688,7 +688,7 @@
     //rect(a, b, c, d, tl, tr, br, bl)
     rect(x, y, w, h, 2, 2, 0, 0);
     //text
-    textSize(33); //why cant i change this size to >33? or even to 32 i cant do
+    textSize(31); //why cant i change this size to >33? or even to 32 i cant do
     textAlign(CENTER, CENTER);
     fill(c_text_color);
     text(card_title, x, y, w, 40);
@@ -702,16 +702,7 @@
     card_y = y+40;
     //uiLight();
   }
-//public void paragraphCard(String card_text, int x, int y, int w, int h){
-//    noStroke();
-//    fill(c_light);
-//    rect(x+5, y+5, w, h);
-//    textSize(15);
-//    textAlign(CENTER, CENTER);
-//    fill(c_text_color); //colour of the text? jeez
-//    text(card_text, x, y, w, 40);
-    
-//  }
+
   public void beginCard(int x, int y, int w, int h) {
     //noStroke();
     fill(c_mid);
