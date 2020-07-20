@@ -186,7 +186,7 @@
       fill(white);
       rect(x, y, w, h);
       fill(black);
-      textSize(15);
+      textSize(20);
       textAlign(CENTER, CENTER);
       text(text, x, y, w, h);
       if (clicked && canClick) {
@@ -218,10 +218,10 @@
         return true;
       }
     } else {
-      fill(white);
-      rect(x, y, w, h);
       fill(black);
-      textSize(15);
+      rect(x, y, w, h);
+      fill(white);
+      textSize(20);
       textAlign(CENTER, CENTER);
       text(text, x, y, w, h);
       return false;
@@ -258,9 +258,9 @@
         return true;
       }
     } else {
-      fill(white);
-      rect(x, y, w, h);
       fill(black);
+      rect(x, y, w, h);
+      fill(white);
       textSize(15);
       textAlign(CENTER, CENTER);
       text(text, x, y, w, h);
@@ -271,6 +271,7 @@
   }
   
   boolean PlaySuggestionsButton(String text, int x, int y, int w, int h) {
+    //stroke(color(255,255,255));
     if (mouseX >= x && mouseX <= x+w && 
       mouseY >= y && mouseY <= y+h) {
       fill(white);
@@ -283,8 +284,9 @@
         canClick = false;
         fill(white);
         rect(x, y, w, h);
+        fill(white);
         text(text, x, y, w, h);
-        if (text=="Play"){
+        if (text=="PLAY"){
           playSound(volume, suggestions.get(currentSuggestion));
         } else {
           playSound(volume, population.fittest);
@@ -292,17 +294,18 @@
         return true;
       }
     } else {
-      fill(white);
-      rect(x, y, w, h);
       fill(black);
+      rect(x, y, w, h);
+      fill(white);
       textSize(15);
       textAlign(CENTER, CENTER);
       text(text, x, y, w, h);
       return false;
     }
-
+    
     return false;
   }
+  
   
   //Basic Image Button
   boolean ImageButton(PImage img, int x, int y, int w, int h) {
@@ -678,17 +681,20 @@
 
     noStroke();
     //Shadow
-    fill(0, 0, 0, 15);
-    rect(x+5, y+5, w, h);
-    fill(c_light);
-    rect(x, y, w, 40, 2, 2, 0, 0);
-    textSize(15);
+    //fill(0, 0, 0, 15);
+    //fill(255);
+    //rect(x+5, y+5, w+100, h+10);
+    fill(black);
+    //rect(a, b, c, d, tl, tr, br, bl)
+    rect(x, y, w, h, 2, 2, 0, 0);
+    //text
+    textSize(33); //why cant i change this size to >33? or even to 32 i cant do
     textAlign(CENTER, CENTER);
     fill(c_text_color);
     text(card_title, x, y, w, 40);
-    fill(c_mid);
+    fill(black);
 
-    rect(x, y+40, w, h-40, 0, 0, 2, 2);
+    rect(x, y+40, w, h-20, 0, 0, 2, 2);
 
     card_h = h-40;
     card_w = w;
@@ -696,10 +702,20 @@
     card_y = y+40;
     //uiLight();
   }
-
+//public void paragraphCard(String card_text, int x, int y, int w, int h){
+//    noStroke();
+//    fill(c_light);
+//    rect(x+5, y+5, w, h);
+//    textSize(15);
+//    textAlign(CENTER, CENTER);
+//    fill(c_text_color); //colour of the text? jeez
+//    text(card_text, x, y, w, 40);
+    
+//  }
   public void beginCard(int x, int y, int w, int h) {
-    noStroke();
+    //noStroke();
     fill(c_mid);
+    
 
     rect(x, y, w, h);
 

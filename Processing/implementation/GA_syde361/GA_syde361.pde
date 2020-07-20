@@ -3,7 +3,7 @@ import controlP5.*;
 MidiBus myBus; // The MidiBus
 import arb.soundcipher.*;
 SCScore score = new SCScore();
-
+//this is new branch
 int channel = 0; 
 String targetMidi1;
 String targetMidi2; 
@@ -35,6 +35,7 @@ PFont f;
 
 ControlP5 cp5;
 ScreenSwitchListener screenListener;
+PlayPauseListener playSong;
 CallbackListener cb;
 //PauseListener pauseListener;
 //ControlFont font = new ControlFont(f,14);
@@ -43,7 +44,10 @@ Slider s1;
 Button pause;
 Button play;
 Button resume;
+Button playSuggestion;
+Button getSuggestion;
 Knob soundLevel;
+int clickedButton;
 int changeScreen;
 int pauseScreen;
 double volume = 80;
@@ -63,6 +67,7 @@ boolean[] instrument_buttons = new boolean[instruments];
 
 //UI variables
 int margin_left = 205;
+//int margin_left = 100;
 int margin_top = 120;
 int title_height = 100;
 int machine_height = 375; //currently this is just a buffer to keep stuff from overlapping
@@ -88,8 +93,10 @@ void setup() {
   population.updateGA(mutationRate);
 
   f = createFont("Roboto",48,true);
+  ControlFont fontBPM = new ControlFont(f,15);
+    ControlFont pause_play_buttons_font = new ControlFont(f,15);
 
-  ControlFont font = new ControlFont(f,14);
+  ControlFont font = new ControlFont(f,20);
   textFont(f,20);
   noStroke();
   
@@ -112,17 +119,20 @@ void setup() {
   
   cp5 = new ControlP5(this);
   screenListener = new ScreenSwitchListener();
+  playSong = new PlayPauseListener();
     
-  cp5.addButton("Hip-hop")
+  cp5.addButton("Click Here To Get Started!")
      .setValue(1)
-     .setPosition(20,100)
-     .setSize(100,30)
-     .setColorBackground(color(51, 64, 80))
+     .setPosition(550,550)
+     .setSize(270,40)
+     //.setColorBackground(color(51, 64, 80))
+     .setColorBackground(0)
+
      .setFont(font)
      .addListener(screenListener)
      ;
      
-  cp5.getController("Hip-hop")
+  cp5.getController("Click Here To Get Started!")
      .getCaptionLabel()
      .toUpperCase(false)
      ;
@@ -143,10 +153,11 @@ void setup() {
          ;
        
  s1 = cp5.addSlider("tempo")
-     .setPosition(margin_left+60+((beats-6)*57),margin_top+50)
+     .setPosition(margin_left+60+((beats-6)*57),margin_top+52)
      .setRange(50,180)
-     .setSize(130,30)
+     .setSize(130,35)
      .setCaptionLabel("BPM")
+     .setFont(fontBPM)
      .setColorBackground(color(40))
      .setColorForeground(color(180))
      .setColorActive(color(250))
@@ -171,30 +182,31 @@ void setup() {
                   .setColorActive(color(250))
                   .setVisible(false)
                   ;
-  
   //pauseListener = new PauseListener();
   pause = cp5.addButton("Pause")
-             .setValue(1)
-             .setPosition(20,200+machine_height+100)
-             .setSize(100,30)
-             .setColorBackground(color(51, 64, 80))
-             .setFont(font)
+             .setValue(0)
+             //.setPosition(20,200+machine_height+100)
+             .setPosition(margin_left,margin_top+50) 
+             .setSize(100,35)
+             .setColorBackground(0)
+             .setFont(pause_play_buttons_font)
              .setVisible(false)
+             .addListener(playSong)
              ;
       
-
   play = cp5.addButton("Play")
              .setValue(1)
-             .setPosition(150,200+machine_height+100)
-             .setSize(100,30)
-             .setColorBackground(color(51, 64, 80))
-             .setFont(font)
+             .setPosition(margin_left + 100,margin_top+50)
+             .setSize(100,35)
+             .setColorBackground(color(255,255,255))
+             .setColorCaptionLabel(0)
+             .setFont(pause_play_buttons_font)
              .setVisible(false)
+             //.addListener(playSong)
              ;
-     
-     
+
   resume = cp5.addButton("Generate")
-             .setValue(0)
+             .setValue(2)
              .setPosition(280,200+machine_height+100)
              .setSize(100,30)
              .setColorBackground(color(51, 64, 80))
@@ -202,10 +214,38 @@ void setup() {
              .setVisible(false)
              ;
 
+  //playSuggestion = cp5.addButton("PlaySuggestion")
+  //           .setPosition(margin_left+300,margin_top+machine_height-70)
+  //           .setSize(100,35)
+  //           .setColorBackground(color(255,255,255))
+  //           .setFont(pause_play_buttons_font)
+  //           .setVisible(false)
+  //           ;
+             
+  //getSuggestion = cp5.addButton("Get Suggestions")
+  //           .setPosition(margin_left+60+((beats-3)*57),margin_top+50)
+  //           .setSize(150,35)
+  //           .setColorBackground(0)
+  //           .setFont(pause_play_buttons_font)
+  //           .setVisible(false)
+  //           ;
+ 
+  //playSuggestion.addCallback(new CallbackListener(){
+  //   public void controlEvent(CallbackEvent theEvent){
+  //         //playSound(volume, suggestions.get(currentSuggestion));
+  //   }
+  //});
+  
+  //getSuggestion.addCallback(new CallbackListener(){
+  //   public void controlEvent(CallbackEvent theEvent){
+       
+  //   }
+  //});
+
     pause.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
-          cp5.getController("Pause").setVisible(false);
+          //cp5.getController("Pause").setVisible(true);
           pauseScreen = (int)theEvent.getController().getValue();
         }
       }
@@ -216,8 +256,10 @@ void setup() {
    play.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
-          cp5.getController("Play").setVisible(false);
+
+          //cp5.getController("Play").setVisible(true);
           playSound(volume, arrayToString(sequencer_states));
+
           print(user_beat);
           print('\n');
         }
@@ -256,16 +298,29 @@ String newSuggestion(){
 
 void draw() {
       if(changeScreen == 0){
-        beginCard("Welcome to UCompose, please select a genre of music:", 0, 0, 800, 600);
+        //rect(width/4,height/4,width/2,height/2);
+        //        fill(0);
+        //String strTitle = "UCompose";
+        //text(strTitle, width/4, height/4, 
+        //width/2,  height/2 );
+        //textSize(30);
+        beginCard("UCompose", 0, 150, 1350, 1000);
+        rect(width/4,height/4,width/2,height/2);
+        fill(255);
+          String str="Hello! I am a drum machine. I’ll run your beat through my genetic algorithm and suggest things you could add to make it even better.";
+           textSize(25);
+        text(str, 
+        width/4, height/4, 
+        width/2,  height/2 );
         
-        if(Button("R&B",20,150)){
-          //screen++;
-        }
+        //if(Button("R&B",20,150)){
+        //  //screen++;
+        //}
         
-        if(Button("Rock",20,200)){
-          //screen++;
-        }
-      endCard();
+        //if(Button("Rock",20,200)){
+        //  //screen++;
+        //}
+      //endCard();
       }
        else if(changeScreen == 1){
         drawScreen();
@@ -313,10 +368,10 @@ void draw() {
 
 void drawScreen(){
    background(black);
-   textFont(f,18);
+   textFont(f,15);
    
-   String title = song_title.draw(margin_left,margin_top,900,70);
-   GetSuggestionsButton(suggestionsLabel, margin_left+60+((beats-3)*57),margin_top+50,150,30);
+   String title = song_title.draw(margin_left,margin_top - 75,900,70);
+   GetSuggestionsButton(suggestionsLabel, margin_left+60+((beats-3)*57),margin_top+50,150,35);
  
    drawDrumMachine();
    
@@ -376,23 +431,23 @@ void drawDrumMachine (){
 }
 
 void drawSuggestions (){
-    textFont(f,28);
-   text("Suggestions for you: ",margin_left+140,margin_top+machine_height-60);
-   PlaySuggestionsButton("Play", margin_left+300,margin_top+machine_height-70,50,30);
+    textFont(f,20);
+   text("Suggestions for you: ",margin_left+100,margin_top+machine_height-60);
+   PlaySuggestionsButton("PLAY", margin_left,margin_top+machine_height-30,100,35);
    
   //instruments and beats
   for (int i = 0; i < instruments; i++){
-    instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+(2*machine_height/3)+title_height+i*57, 50, 50);
+    instrument_buttons[i]=ImageButtonToggle(instrument_buttons[i], instrument_icons[i], instrument_hovers[i], margin_left, margin_top+(2*machine_height/3)+title_height+i*57+40, 50, 50);
     for (int j=0; j < beats; j++){
       boolean downbeat = (j%4 == 0);
-      suggestion_states[i][j] = SuggestionSquare(suggestion_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+(2*machine_height/3)+i*57, 50, 50, i, downbeat);
+      suggestion_states[i][j] = SuggestionSquare(suggestion_states[i][j], margin_left+ (j+1)*57, margin_top+title_height+(2*machine_height/3)+i*57 +40, 50, 50, i, downbeat);
     }
   }
   
   if (showBackButton==true){
-  SuggestionsButton("<",margin_left-57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57, 50, 50);
+  SuggestionsButton("<",margin_left-57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57 +40, 50, 50);
   }
-  SuggestionsButton(nextButtonLabel,margin_left+(beats+1)*57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57, 50, 50);
+  SuggestionsButton(nextButtonLabel,margin_left+(beats+1)*57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57+40, 50, 50);
   
   //progress indicating highlight
   fill(255,150);
@@ -407,13 +462,33 @@ class ScreenSwitchListener implements ControlListener {
     changeScreen = (int)theEvent.getController().getValue();
       
       
-      cp5.getController("Hip-hop").remove();
-      
+      cp5.getController("Click Here To Get Started!").remove();
+      cp5.getController("Play").setVisible(true);
+      cp5.getController("Pause").setVisible(true);
       //ControlFont font = new ControlFont(f,14);
-      
+      //getSuggestion.setVisible(true);
       
   }
 }
+
+class PlayPauseListener implements ControlListener {
+  //changeScreen;
+  
+  boolean playing = false;
+  public void controlEvent(ControlEvent theEvent){
+    clickedButton = (int)theEvent.getController().getValue();      
+    System.out.println(clickedButton);
+    if(clickedButton == 1) {
+      playing = true; //remember to make this false when playing
+    }
+    else if(clickedButton == 0) {
+      playing = false;
+    }
+    else
+      playing = false;
+}
+}
+    
 
 boolean[][] stringToArray(String sequence) {
  boolean[][] sequence_array = new boolean[instruments][beats];
