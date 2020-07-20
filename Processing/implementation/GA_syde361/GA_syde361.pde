@@ -201,7 +201,7 @@ void setup() {
              .setColorCaptionLabel(0)
              .setFont(pause_play_buttons_font)
              .setVisible(false)
-             .addListener(playSong)
+             //.addListener(playSong)
              ;
 
   resume = cp5.addButton("Generate")
@@ -228,7 +228,6 @@ void setup() {
   //           .setFont(pause_play_buttons_font)
   //           .setVisible(false)
   //           ;
- //GetSuggestionsButton("Get Suggestions", margin_left+60+((beats-3)*57),margin_top+50,150,35);
  
   //playSuggestion.addCallback(new CallbackListener(){
   //   public void controlEvent(CallbackEvent theEvent){
@@ -245,7 +244,7 @@ void setup() {
     pause.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
-          cp5.getController("Pause").setVisible(true);
+          //cp5.getController("Pause").setVisible(true);
           pauseScreen = (int)theEvent.getController().getValue();
         }
       }
@@ -256,7 +255,7 @@ void setup() {
    play.addCallback(new CallbackListener(){
       public void controlEvent(CallbackEvent theEvent){
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
-          cp5.getController("Play").setVisible(true);
+          //cp5.getController("Play").setVisible(true);
           playSound(volume, population.fittest);
           print(user_beat);
           print('\n');

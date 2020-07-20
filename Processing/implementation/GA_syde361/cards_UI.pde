@@ -278,7 +278,7 @@
         rect(x, y, w, h);
         fill(white);
         text(text, x, y, w, h);
-        if (text=="Play"){
+        if (text=="PLAY"){
           playSound(volume, suggestions.get(currentSuggestion));
         } else {
           playSound(volume, population.fittest);
