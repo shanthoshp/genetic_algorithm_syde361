@@ -471,23 +471,19 @@ class ScreenSwitchListener implements ControlListener {
 class PlayPauseListener implements ControlListener {
   //changeScreen;
   
-  boolean toPlayOrNotToPlay = false;
+  boolean playing = false;
   public void controlEvent(ControlEvent theEvent){
-    //println(theEvent.getController().getValue());
-    System.out.println("reaching this");
     clickedButton = (int)theEvent.getController().getValue();      
     System.out.println(clickedButton);
     if(clickedButton == 1) {
-      toPlayOrNotToPlay = true; //remember to make this false when playing
-      System.out.println("Play");
+      playing = true; //remember to make this false when playing
     }
     else if(clickedButton == 0) {
-      toPlayOrNotToPlay = true;
-      System.out.println("Pause");
+      playing = false;
     }
     else
-      System.out.println("no clue what triggered this");
-  }
+      playing = false;
+}
 }
     
 
