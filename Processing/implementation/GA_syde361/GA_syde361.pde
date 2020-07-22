@@ -14,7 +14,7 @@ String target;
 //int velocity3 = 100;
 int midi1Note = 36;
 int midi2Note = 38;
-int midi3Note = 42;
+int midi3Note = 42; 
 
 StringList suggestions = new StringList();
 int currentSuggestion = 0;
@@ -339,7 +339,9 @@ void drawScreen(){
 
 
   //textAlign(CENTER);
-  //text("Number of Generations: " + count, width*0.75,height*0.75);
+  text("Number of Generations: " + count, width*0.75,height*0.75);
+ print(count);
+ print('\n');
   //text("BPM", width*0.75, height*0.9);
   
 }
@@ -375,12 +377,12 @@ void drawSuggestions (){
    fill(white);
    text("RANDOMNESS",width-700,margin_top+machine_height-30,110,35);
    mutationRate=SliderWhite(0.001, 0.05, mutationRate,width-570,margin_top+machine_height-27, 100, 25);
-   print(mutationRate);
-   print('\n');
+   //print(mutationRate);
+   //print('\n');
    text("ITERATIONS",width-425,margin_top+machine_height-30,110,35);
    generations=int(SliderWhite(1, 20, float(generations),width-300,margin_top+machine_height-27, 100, 25));
-   print(generations);
-   print('\n');
+   //print(generations);
+   //print('\n');
    
   //instruments and beats
   for (int i = 0; i < instruments; i++){

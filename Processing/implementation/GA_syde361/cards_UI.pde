@@ -202,6 +202,10 @@
             showBackButton=false;
           }
         } else if(text==">"){
+          print("gens at suggestion: "+count);
+            print('\n');
+            print("mutation rate at suggestion: "+mutationRate);
+            print('\n');
           currentSuggestion = currentSuggestion + 1;
           suggestion_states = stringToArray(suggestions.get(currentSuggestion));
           showBackButton=true;
@@ -209,6 +213,10 @@
             nextButtonLabel = "+";
           }
         } else if(text=="+"){
+            print("gens at suggestion: "+count);
+            print('\n');
+            print("mutation rate at suggestion: "+mutationRate);
+            print('\n');
           String suggest = newSuggestion();
           suggestion_states = stringToArray(suggest);
           if (currentSuggestion>1){
