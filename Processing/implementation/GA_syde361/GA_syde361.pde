@@ -23,6 +23,8 @@ Boolean showBackButton = false;
 Boolean showSuggestions = false;
 String suggestionsLabel = "Show Suggestions";
 
+boolean playing = false;
+
 float mutationRate = 0.001; 
 int totalPopulation = 150;
 int beat = 0;
@@ -219,6 +221,8 @@ void setup() {
         if(theEvent.getAction() == ControlP5.ACTION_PRESSED){
           //cp5.getController("Pause").setVisible(true);
           pauseScreen = (int)theEvent.getController().getValue();
+          
+          playing = false;
         }
       }
     }
@@ -234,6 +238,9 @@ void setup() {
 
           print(user_beat);
           print('\n');
+          
+          playing = true;
+          beat = 0;
         }
       }
     }
@@ -288,8 +295,12 @@ void draw() {
 
         if(millis()-startTime > 60/tempo/4*1000){
           startTime = millis();
-          beat++;
-          beat = beat%targetMidi1.length();
+          if (playing){
+            beat++;
+            if (beat ==16){
+              playing = false;} // take this out once it loops continuously
+            beat = beat%targetMidi1.length();
+          }
           
 
           //Each ControlP5 element is shown on the main beat maker page
