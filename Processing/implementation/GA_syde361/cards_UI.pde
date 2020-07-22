@@ -947,6 +947,39 @@
 
     return value;
   }
+  
+  //Slider with our styling
+  public float SliderWhite(float min, float max, float value, int x, int y, int w, int h) {
+    noStroke();
+    fill(beat_dark);
+    rect(x, y+h/2+3, w, 4, 2);
+    float pos = map(value, min, max, 0, w);
+    fill(white);
+    rect(x, y+h/2+3, pos, 4, 2);
+
+    //Hover
+    if (mouseX >= x && mouseX <= x+w && mouseY >= y && mouseY <= y+h)
+    {
+      fill(white);
+      if (mousePressed) {
+        pos = mouseX;
+        value = map(pos, x, x+w, min, max);
+        ellipse(pos, y+h/2+5, h-3, h-3); 
+        ellipse(pos, y+h/2+5, h-8, h-8);
+      } else {
+        ellipse(pos+x, y+h/2+5, h-3, h-3); 
+        ellipse(pos+x, y+h/2+5, h-8, h-8);
+      }
+    } 
+    //Normal
+    else {
+      noStroke();
+      fill(white);
+      ellipse(pos+x, y+h/2+5, h-8, h-8);
+    }
+
+    return value;
+  }
 
   //Basic Slider with Tooltip
   public float Slider(float min, float max, float value, int x, int y, int w, int h, char tooltip) {

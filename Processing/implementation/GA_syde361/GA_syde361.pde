@@ -167,7 +167,7 @@ void setup() {
          
   cp5.getController("MutaGen")
      .getValueLabel()
-     .setVisible(false)
+     .setVisible(true)
      ;
   
   soundLevel = cp5.addKnob("volume")
@@ -297,8 +297,8 @@ void draw() {
 
           s1.setVisible(true);
 
-          generations = int(s.getArrayValue()[0]);
-          mutationRate = s.getArrayValue()[1];
+          //generations = int(s.getArrayValue()[0]); // replaced by a single slider, see drawSuggestions
+          //mutationRate = s.getArrayValue()[1]; // replaced by a single slider, see drawSuggestions
           cp5.getController("MutaGen")
              .setCaptionLabel("Mut/Gen" + "   " + s.getArrayValue()[1] + "," + int(s.getArrayValue()[0]) )
              ;
@@ -353,6 +353,17 @@ void drawSuggestions (){
    textFont(f,20);
    text("Suggestions for you: ",margin_left+100,margin_top+machine_height-60);
    PlaySuggestionsButton("PLAY", margin_left,margin_top+machine_height-30,100,35);
+   
+   //sliders - only for this version 
+   fill(white);
+   text("RANDOMNESS",width-700,margin_top+machine_height-30,110,35);
+   mutationRate=SliderWhite(0.001, 0.05, mutationRate,width-570,margin_top+machine_height-27, 100, 25);
+   print(mutationRate);
+   print('\n');
+   text("ITERATIONS",width-425,margin_top+machine_height-30,110,35);
+   generations=int(SliderWhite(1, 20, float(generations),width-300,margin_top+machine_height-27, 100, 25));
+   print(generations);
+   print('\n');
    
   //instruments and beats
   for (int i = 0; i < instruments; i++){
