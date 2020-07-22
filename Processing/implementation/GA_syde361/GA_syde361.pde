@@ -381,6 +381,23 @@ void drawSuggestions (){
    generations=int(SliderWhite(1, 20, float(generations),width-300,margin_top+machine_height-27, 100, 25));
    print(generations);
    print('\n');
+   fill(beat_med);
+   text("WEIGHTING:",width-1020,margin_top+machine_height+190,110,35);
+   text("SYMMETRY",width-900,margin_top+machine_height+190,110,35);
+   float dummy_var=0.0;
+   dummy_var=SliderWhite(0.001, 0.05, dummy_var,width-770,margin_top+machine_height+193, 100, 25);
+      fill(beat_med);
+
+   text("DENSITY",width-660,margin_top+machine_height+190,110,35);
+   float dummy_var2=0.0;
+   dummy_var2=SliderWhite(0.001, 0.05, dummy_var2,width-550,margin_top+machine_height+193, 100, 25);
+      fill(beat_med);
+
+   text("PATTERN",width-420,margin_top+machine_height+190,110,35);
+   float dummy_var3=0.0;
+   dummy_var3=SliderWhite(0.001, 0.05, dummy_var3,width-300,margin_top+machine_height+193, 100, 25);
+
+
    
   //instruments and beats
   for (int i = 0; i < instruments; i++){
@@ -395,6 +412,8 @@ void drawSuggestions (){
   SuggestionsButton("<",margin_left-57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57 +40, 50, 50);
   }
   SuggestionsButton(nextButtonLabel,margin_left+(beats+1)*57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57+40, 50, 50);
+  
+
   
 }
 
