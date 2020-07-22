@@ -25,7 +25,9 @@ class DNA {
      int score_openHat = 0;
      
      //Currently each score is weighted evenly
-     int weight_factor = (100/3);
+     int weight_original = (100/3);
+     int weight_closedHat = (100/3);
+     int weight_openHat = (100/3);
 
      for (int i = 0; i < genes.length; i++) {
         if (genes[i] == target.charAt(i)) {
@@ -41,7 +43,7 @@ class DNA {
      }
      
      if(sym1 < 11){
-        //Random value chosen seems to work well though
+        //Random value chosen
         score_closedHat = 40;
      }
     
@@ -53,12 +55,12 @@ class DNA {
      }
      
      if(density > 2){
-       //Random value chosen seems to work well though
+       //Random value chosen
        score_openHat = 70;
      }
      
      //Fitness value is fluctuates around 90 to plus/minus 10 (where max is roughly 100)
-     fitness = float((score_original + score_closedHat + score_openHat) * weight_factor) / (float)target.length();
+     fitness = float(score_original * weight_original + score_closedHat * weight_closedHat + score_openHat * weight_openHat) / (float)target.length();
     }
     
   // Crossover
