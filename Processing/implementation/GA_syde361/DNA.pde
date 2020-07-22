@@ -20,10 +20,16 @@ class DNA {
   }
   
   void calcFitness (String target) {
-     int score = 0;
+     int score_original = 0;
+     int score_closedHat = 0;
+     int score_openHat = 0;
+     
+     //Currently each score is weighted evenly
+     int weight_factor = (100/3);
+
      for (int i = 0; i < genes.length; i++) {
         if (genes[i] == target.charAt(i)) {
-          score++;
+          score_original++;
         }
      }
      
@@ -33,23 +39,26 @@ class DNA {
          sym1++;
        }
      }
-     if(sym1 < 11){
-         score -= 8;
-     }
      
+     if(sym1 < 11){
+        //Random value chosen seems to work well though
+        score_closedHat = 40;
+     }
+    
      //the open hat section of the beat is checked for low density of notes
      for (int i = 33; i < target.length(); i++){
        if(genes[i] == 49){
          density++;
        }
-       
-       
-     }
-     if(density > 2){
-       score -= 10;
      }
      
-     fitness = (float)score / (float)target.length();
+     if(density > 2){
+       //Random value chosen seems to work well though
+       score_openHat = 70;
+     }
+     
+     //Fitness value is fluctuates around 90 to plus/minus 10 (where max is roughly 100)
+     fitness = float((score_original + score_closedHat + score_openHat) * weight_factor) / (float)target.length();
     }
     
   // Crossover
