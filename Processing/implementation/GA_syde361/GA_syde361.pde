@@ -360,6 +360,10 @@ void drawDrumMachine (){
     fill(255,150);
     rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
   }
+  else {
+    noFill();
+    rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
+  }
   
 }
 
@@ -381,10 +385,6 @@ void drawSuggestions (){
   SuggestionsButton("<",margin_left-57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57 +40, 50, 50);
   }
   SuggestionsButton(nextButtonLabel,margin_left+(beats+1)*57,margin_top+title_height+(2*machine_height/3)+(instruments/2)*57+40, 50, 50);
-  
-  //progress indicating highlight
-  fill(255,150);
-  rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
   
 }
 
