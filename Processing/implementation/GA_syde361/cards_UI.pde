@@ -287,9 +287,9 @@
         fill(white);
         text(text, x, y, w, h);
         if (text=="PLAY"){
-          playSound(volume, suggestions.get(currentSuggestion));
+          playSound(volume, suggestions.get(currentSuggestion),false);
         } else {
-          playSound(volume, population.fittest);
+          playSound(volume, population.fittest,false);
         } 
         return true;
       }
@@ -855,7 +855,7 @@
     //Normal
     else {
       if (value){
-        fill(on_color);}
+        fill(on_color);}    
       else {
         if (downbeat){
           fill(beat_med);}
