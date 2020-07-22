@@ -113,11 +113,11 @@ void setup() {
   
   //Load icons for sequencer
   instrument_icons[0] = loadImage("assets/kick.png");
-  instrument_icons[1] = loadImage("assets/snare.png");
-  instrument_icons[2] = loadImage("assets/clap.png");
+  instrument_icons[1] = loadImage("assets/closed-hihat.png");
+  instrument_icons[2] = loadImage("assets/open-hihat.png");
   instrument_hovers[0] = loadImage("assets/kick-hover.png");
-  instrument_hovers[1] = loadImage("assets/snare-hover.png");
-  instrument_hovers[2] = loadImage("assets/clap-hover.png");
+  instrument_hovers[1] = loadImage("assets/closed-hihat-hover.png");
+  instrument_hovers[2] = loadImage("assets/open-hihat-hover.png");
   
   cp5 = new ControlP5(this);
   screenListener = new ScreenSwitchListener();
@@ -356,8 +356,10 @@ void drawDrumMachine (){
   }
   
   //progress indicating highlight
-  fill(255,150);
-  rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
+  if (playing){
+    fill(255,150);
+    rect(margin_left+(beat+1)*57-2,margin_top+title_height-2,54,57*instruments-7+4);
+  }
   
 }
 
