@@ -276,7 +276,7 @@ String newSuggestion(){
 void draw() {
       if(changeScreen == 0){
       
-      image(UComposeIcon, 275, 180, 800, 212);
+      image(UComposeIcon, 300, 180, 750, 210);
         //beginCard("UCompose", 0, 150, 1350, 1000);
         //rect(width/4,height/4,width/2,height/2);
         fill(255);
