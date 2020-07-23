@@ -76,7 +76,7 @@ int machine_height = 375; //currently this is just a buffer to keep stuff from o
 TextInputSpecial song_title= new TextInputSpecial("my_beat");
 PImage[] instrument_icons = new PImage[instruments];
 PImage[] instrument_hovers = new PImage[instruments];
-
+PImage UComposeIcon = new PImage();
 void setup() {
   size(1366, 768);
   background(black);
@@ -118,7 +118,7 @@ void setup() {
   instrument_hovers[0] = loadImage("assets/kick-hover.png");
   instrument_hovers[1] = loadImage("assets/closed-hihat-hover.png");
   instrument_hovers[2] = loadImage("assets/open-hihat-hover.png");
-  
+  UComposeIcon = loadImage("assets/icon.png");
   cp5 = new ControlP5(this);
   screenListener = new ScreenSwitchListener();
   playSong = new PlayPauseListener();
@@ -277,13 +277,14 @@ String newSuggestion(){
 
 void draw() {
       if(changeScreen == 0){
-        beginCard("UCompose", 0, 150, 1350, 1000);
-        rect(width/4,height/4,width/2,height/2);
+        image(UComposeIcon, 300, 180, 750, 210);
+        //beginCard("UCompose", 0, 150, 1350, 1000);
+        //rect(width/4,height/4,width/2,height/2);
         fill(255);
           String str="Hello! I am a drum machine. I’ll run your beat through my genetic algorithm and suggest things you could add to make it even better.";
            textSize(25);
         text(str, 
-        width/4, height/4, 
+        width/4, height/2, 
         width/2,  height/2 );
       }
        else if(changeScreen == 1){
