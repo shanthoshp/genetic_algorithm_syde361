@@ -33,16 +33,13 @@ class DNA {
   
   void calcFitness (String target) {
     
-     // ******** used to be ints - sienna
      float score_original = 5;      // score of target // setting to 5 produced 1-2 beats regularly
-     float score_closedHat = -5;  //-5   // score of symmetry  
-     float score_openHat = 3;  //3     // score of density
+     float score_closedHat = -5;  // score of symmetry  
+     float score_openHat = 3;  // score of density
      
-     //Currently each score is weighted evenly 
-     // ******** used to be ints - sienna
-     float weight_original = (100*0.6);      // importance of target
-     float weight_closedHat = (100*0.2);     // importance of symmetry
-     float weight_openHat = (100*0.2);       // importance of density
+     float weight_original = (100*0.6);      // weight of target
+     float weight_closedHat = (100*0.2);     // weight of symmetry
+     float weight_openHat = (100*0.2);       // weight of density
      
             print("gens at suggestion: "+count);
             print('\n');
@@ -99,7 +96,7 @@ class DNA {
      print('\n');
      
      if(density > 2 || density == 0){
-       score_openHat = -10; // ends up with the 2 beat stuff past like 90 generations
+       score_openHat = -10; // ends up with the 2 beat stuff right away
        //score_openHat = -5;  // Consistently suggests beats with 3, 4, and 5 beats
      }
      
