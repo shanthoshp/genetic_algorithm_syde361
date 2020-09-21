@@ -202,6 +202,30 @@
             showBackButton=false;
           }
         } else if(text==">"){
+          
+          // remember to remove these lines  
+          //print('\n');
+          //print("gens at suggestion: "+count);
+          //  print('\n');
+          //  print("mutation rate at suggestion: "+mutationRate);
+          //  print('\n');
+          //  print("fitness no weight: "+fit_no_w);
+          //  print('\n');
+          //  print("fitness total: "+fit);
+          //  print('\n');
+          //  print("score original: "+score_og);
+          //  print('\n');
+          //  print("score og*weight: "+(score_og*weight_og));
+          //  print('\n');
+          //  print("score closed: "+score_cl);
+          //  print('\n');
+          //  print("score cl*weight: "+(score_cl*weight_cl));
+          //  print('\n');
+          //  print("score open: "+score_op);
+          //  print('\n');
+          //  print("score op*weight: "+(score_op*weight_op));
+          //  print('\n');
+          
           currentSuggestion = currentSuggestion + 1;
           suggestion_states = stringToArray(suggestions.get(currentSuggestion));
           showBackButton=true;
@@ -209,6 +233,32 @@
             nextButtonLabel = "+";
           }
         } else if(text=="+"){
+          
+          // remember to remove these lines  
+          //print('\n');
+          //print("gens at suggestion: "+count);
+          //  print('\n');
+          //  print("mutation rate at suggestion: "+mutationRate);
+          //  print('\n');
+          //  print("Density: "+dense);
+          //  print('\n');
+          //  print("fitness no weight: "+fit_no_w);
+          //  print('\n');
+          //  print("fitness total: "+fit);
+          //  print('\n');
+          //  print("score original: "+score_og);
+          //  print('\n');
+          //  print("score og*weight: "+(score_og*weight_og/48.0));
+          //  print('\n');
+          //  print("score closed: "+score_cl);
+          //  print('\n');
+          //  print("score cl*weight: "+(score_cl*weight_cl/48.0));
+          //  print('\n');
+          //  print("score open: "+score_op);
+          //  print('\n');
+          //  print("score op*weight: "+(score_op*weight_op/48.0));
+          //  print('\n');
+            
           String suggest = newSuggestion();
           suggestion_states = stringToArray(suggest);
           if (currentSuggestion>1){

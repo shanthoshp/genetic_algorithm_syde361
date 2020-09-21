@@ -25,7 +25,8 @@ String suggestionsLabel = "Show Suggestions";
 
 boolean playing;
 
-float mutationRate = 0.001; 
+float mutationRate = 0.05; 
+//float mutationRate = 0.001; 
 int totalPopulation = 150;
 int beat = 0;
 Boolean currentlyOnFirst = true;
@@ -168,7 +169,8 @@ void setup() {
 
          .setSize(100,100)
          .setMinMax(1,0.05,20,0.001)
-         .setValue(1,0.02)
+         .setValue(1,0.02)  
+         //.setValue(1,0.02)    // uncomment for original
          .setColorBackground(color(40))
          .setColorForeground(color(180))
          .setColorActive(color(250))
@@ -321,6 +323,7 @@ void draw() {
         redraw();
 
         if(millis()-startTime > 60/tempo/4*1000){
+        //if(millis()-startTime > 60/tempo/4*10000){
           startTime = millis();
           if (playing){
             beat++;
@@ -376,8 +379,8 @@ void drawScreen(){
    }
 
 
-  //textAlign(CENTER);
-  //text("Number of Generations: " + count, width*0.75,height*0.75);
+  textAlign(CENTER);
+  text("Number of Generations: " + count, width*0.75,height*0.75);
   //text("BPM", width*0.75, height*0.9);
   
 }
@@ -416,6 +419,14 @@ void drawSuggestions (){
    textFont(f,20);
    text("Suggestions for you: ",margin_left+100,margin_top+machine_height-60);
    PlaySuggestionsButton("PLAY", margin_left,margin_top+machine_height-30,100,35);
+   
+   // remove ///////////
+      //mutation slider
+   //fill(white);
+   //text("RANDOMNESS",width-700,margin_top+machine_height-30,110,35);
+   //mutationRate=SliderWhite(0.001, 0.05, mutationRate,width-570,margin_top+machine_height-27, 100, 25);
+   //print(mutationRate);
+   ////////////
    
   //instruments and beats
   for (int i = 0; i < instruments; i++){
